@@ -1,15 +1,18 @@
 ---
 import "../styles/global.css";
+import type { SiteMetadata } from "../data/site";
 
-type Props = {
-  title: string;
-  description: string;
-  author: string;
-  canonicalUrl?: string;
-  socialImage?: string;
-};
+type Props = SiteMetadata;
 
-const { title, description, author, canonicalUrl, socialImage } = Astro.props;
+const {
+  title,
+  description,
+  author,
+  canonicalUrl,
+  socialImage,
+  socialTitle = title,
+  socialDescription = description,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -21,14 +24,14 @@ const { title, description, author, canonicalUrl, socialImage } = Astro.props;
     <meta name="author" content={author} />
     <meta name="theme-color" content="#0f0f0f" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={socialTitle} />
+    <meta property="og:description" content={socialDescription} />
     <meta
       name="twitter:card"
       content={socialImage ? "summary_large_image" : "summary"}
     />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={socialTitle} />
+    <meta name="twitter:description" content={socialDescription} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     {socialImage && <meta property="og:image" content={socialImage} />}

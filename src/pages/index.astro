@@ -21,5 +21,5 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <StackSection categories={site.stack} />
     <ContactSection {...site.contact} />
   </main>
-  <SiteFooter text={site.footer} email={site.contact.email} />
+  <SiteFooter {...site.footer} email={site.contact.email} />
 </BaseLayout>

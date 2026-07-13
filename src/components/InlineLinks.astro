@@ -1,0 +1,22 @@
+---
+import type { SiteLink } from "../data/site";
+
+type Props = {
+  links: readonly SiteLink[];
+  ariaLabel: string;
+};
+
+const { links, ariaLabel } = Astro.props;
+---
+
+{
+  links.length > 0 && (
+    <ul class="inline-links" aria-label={ariaLabel}>
+      {links.map((link) => (
+        <li>
+          <a href={link.href}>[{link.label}]</a>
+        </li>
+      ))}
+    </ul>
+  )
+}

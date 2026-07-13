@@ -1,0 +1,22 @@
+@import "@fontsource/jetbrains-mono/latin-400.css";
+@import "@fontsource/jetbrains-mono/latin-700.css";
+
+@layer base {
+  @font-face {
+    font-family: "Symbols Nerd Font";
+    src: url("/fonts/SymbolsNerdFont-Regular.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  :root {
+    --font-family:
+      "JetBrains Mono", ui-monospace, "Cascadia Code", Menlo, Monaco, Consolas,
+      monospace, "Symbols Nerd Font";
+    --font-size: 16px;
+    --line-height: 1.5;
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+  }
+}

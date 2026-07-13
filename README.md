@@ -48,7 +48,7 @@ All personal content lives in [`src/data/site.ts`](src/data/site.ts). Edit that 
 
 Optional fields can be deleted. Components do not render empty ASCII art, statuses, links, locations, or highlights.
 
-Set `metadata.canonicalUrl` only after you know the final public URL. If you add a social-card image, use a public path such as `/social-card.png`.
+Set `metadata.canonicalUrl` only after you know the final public URL. If you add a social-card image, use a public path such as `/social-card.png`. Optional `socialTitle` and `socialDescription` values can override the document metadata for Open Graph and Twitter cards.
 
 ### Add ASCII art
 
@@ -65,15 +65,25 @@ It remains preformatted and scrolls horizontally on small screens.
 
 ## Theme and font
 
-[`src/styles/caelus.css`](src/styles/caelus.css) maps the Caelus palette into WebTUI variables. [`src/styles/global.css`](src/styles/global.css) owns layout, component styling, and the font stack.
+[`src/styles/caelus.css`](src/styles/caelus.css) maps the Caelus palette into WebTUI variables. The primary mappings are:
+
+| Caelus role                | WebTUI variable                                                 |
+| -------------------------- | --------------------------------------------------------------- |
+| Background                 | `--background0`                                                 |
+| Surface and raised surface | `--background1`, `--background2`                                |
+| Border                     | `--background3`, `--box-border-color`, `--separator-color`      |
+| Primary and muted text     | `--foreground0`, `--foreground1`                                |
+| Accent/status colors       | `--red`, `--green`, `--yellow`, `--blue`, `--magenta`, `--cyan` |
+
+[`src/styles/fonts.css`](src/styles/fonts.css) owns font loading and the font stack. [`src/styles/global.css`](src/styles/global.css) contains layout and component styling.
 
 JetBrains Mono is bundled from `@fontsource/jetbrains-mono`. A pinned Symbols Nerd Font webfont provides the fallback expected by WebTUI without using the plugin's remote `latest` URL. Visitors do not contact a font CDN.
 
 To switch to another self-hosted monospace font:
 
 1. Replace the Fontsource dependency in `package.json`.
-2. Replace the two font imports at the top of `global.css`.
-3. Change the first family in `--font-family`.
+2. Replace the two Fontsource imports at the top of `fonts.css`.
+3. Change the first family in `--font-family` in `fonts.css`.
 
 No Astro component needs to change.
 

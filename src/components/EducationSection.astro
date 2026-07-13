@@ -24,7 +24,7 @@ const { entries } = Astro.props;
               {entry.location && <span>{entry.location}</span>}
             </div>
           </header>
-          {entry.highlights?.length && (
+          {entry.highlights && entry.highlights.length > 0 && (
             <ul class="highlight-list">
               {entry.highlights.map((highlight) => (
                 <li>{highlight}</li>

@@ -1,9 +1,10 @@
 ---
 import type { SiteContent } from "../data/site";
+import InlineLinks from "./InlineLinks.astro";
 
 type Props = SiteContent["introduction"];
 
-const { name, role, summary, asciiArt, links } = Astro.props;
+const { name, role, summary, asciiArt = "", links = [] } = Astro.props;
 ---
 
 <section class="introduction" id="top" aria-labelledby="introduction-title">
@@ -15,15 +16,7 @@ const { name, role, summary, asciiArt, links } = Astro.props;
     )
   }
   <h1 id="introduction-title">{name}</h1>
-  <p class="prompt">{role}</p>
+  <p class="section-label">{role}</p>
   <p class="introduction-summary">{summary}</p>
-  <ul class="inline-links" aria-label="External profiles">
-    {
-      links.map((link) => (
-        <li>
-          <a href={link.href}>[{link.label}]</a>
-        </li>
-      ))
-    }
-  </ul>
+  <InlineLinks links={links} ariaLabel="External profiles" />
 </section>

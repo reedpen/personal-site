@@ -24,14 +24,18 @@ export type StackCategory = {
   items: readonly string[];
 };
 
+export type SiteMetadata = {
+  title: string;
+  description: string;
+  author: string;
+  canonicalUrl?: string;
+  socialImage?: string;
+  socialTitle?: string;
+  socialDescription?: string;
+};
+
 export type SiteContent = {
-  metadata: {
-    title: string;
-    description: string;
-    author: string;
-    canonicalUrl?: string;
-    socialImage?: string;
-  };
+  metadata: SiteMetadata;
   navigation: {
     label: string;
     links: readonly SiteLink[];
@@ -40,20 +44,24 @@ export type SiteContent = {
     name: string;
     role: string;
     summary: string;
-    asciiArt: string;
-    links: readonly SiteLink[];
+    asciiArt?: string;
+    links?: readonly SiteLink[];
   };
   about: readonly string[];
   work: readonly WorkEntry[];
   education: readonly EducationEntry[];
   stack: readonly StackCategory[];
   contact: {
+    prompt: string;
     heading: string;
     body: string;
     email: string;
-    links: readonly SiteLink[];
+    links?: readonly SiteLink[];
   };
-  footer: string;
+  footer: {
+    text: string;
+    linkLabel: string;
+  };
 };
 
 /**
@@ -135,6 +143,7 @@ export const site = {
     { label: "platforms", items: ["Integer", "Dapibus", "Sagittis"] },
   ],
   contact: {
+    prompt: "Available for a conversation",
     heading: "Let's talk",
     body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent libero sed cursus ante dapibus diam.",
     email: "hello@example.com",
@@ -143,5 +152,8 @@ export const site = {
       { label: "linkedin", href: "https://example.com" },
     ],
   },
-  footer: "© 2026 Lorem Ipsum",
+  footer: {
+    text: "© 2026 Lorem Ipsum",
+    linkLabel: "Let's talk",
+  },
 } satisfies SiteContent;

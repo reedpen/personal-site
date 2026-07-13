@@ -1,13 +1,14 @@
 ---
 import type { SiteContent } from "../data/site";
+import InlineLinks from "./InlineLinks.astro";
 
 type Props = SiteContent["contact"];
 
-const { heading, body, email, links } = Astro.props;
+const { prompt, heading, body, email, links = [] } = Astro.props;
 ---
 
 <section class="contact" id="contact" aria-labelledby="contact-title">
-  <p class="prompt">available for a conversation</p>
+  <p class="section-label">{prompt}</p>
   <h2 id="contact-title">{heading}</h2>
   <p>{body}</p>
   <address>
@@ -15,13 +16,5 @@ const { heading, body, email, links } = Astro.props;
       >{email} <span aria-hidden="true">→</span></a
     >
   </address>
-  <ul class="inline-links" aria-label="Other contact links">
-    {
-      links.map((link) => (
-        <li>
-          <a href={link.href}>[{link.label}]</a>
-        </li>
-      ))
-    }
-  </ul>
+  <InlineLinks links={links} ariaLabel="Other contact links" />
 </section>

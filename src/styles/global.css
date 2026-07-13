@@ -1,30 +1,14 @@
 @layer base, utils, components;
 
-@import "@fontsource/jetbrains-mono/latin-400.css";
-@import "@fontsource/jetbrains-mono/latin-700.css";
 @import "@webtui/css/base.css";
 @import "@webtui/css/utils/box.css";
 @import "@webtui/css/components/badge.css";
 @import "@webtui/css/components/typography.css";
 @import "./caelus.css";
+@import "./fonts.css";
 
 @layer base {
-  @font-face {
-    font-family: "Symbols Nerd Font";
-    src: url("/fonts/SymbolsNerdFont-Regular.woff2") format("woff2");
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-  }
-
   :root {
-    --font-family:
-      "JetBrains Mono", ui-monospace, "Cascadia Code", Menlo, Monaco, Consolas,
-      monospace, "Symbols Nerd Font";
-    --font-size: 16px;
-    --line-height: 1.5;
-    --font-weight-normal: 400;
-    --font-weight-bold: 700;
     color-scheme: dark;
   }
 
@@ -181,13 +165,8 @@
     color: var(--foreground1);
   }
 
-  .prompt {
+  .section-label {
     color: var(--caelus-accent);
-  }
-
-  .prompt::before {
-    content: "$ ";
-    color: var(--foreground1);
   }
 
   .ascii-art {
@@ -352,7 +331,7 @@
     font-size: 1.5em;
   }
 
-  .contact > p:not(.prompt) {
+  .contact > p:not(.section-label) {
     color: var(--foreground1);
   }
 

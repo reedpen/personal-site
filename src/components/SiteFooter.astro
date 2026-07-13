@@ -1,13 +1,14 @@
 ---
-type Props = {
-  text: string;
+import type { SiteContent } from "../data/site";
+
+type Props = SiteContent["footer"] & {
   email: string;
 };
 
-const { text, email } = Astro.props;
+const { text, linkLabel, email } = Astro.props;
 ---
 
 <footer class="site-footer">
   <span>{text}</span>
-  <a href={`mailto:${email}`}>let's talk <span aria-hidden="true">→</span></a>
+  <a href={`mailto:${email}`}>{linkLabel} <span aria-hidden="true">→</span></a>
 </footer>
