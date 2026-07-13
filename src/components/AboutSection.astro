@@ -1,0 +1,17 @@
+---
+type Props = {
+  paragraphs: readonly string[];
+};
+
+const { paragraphs } = Astro.props;
+---
+
+<section class="open-section" id="about" aria-labelledby="about-title">
+  <header class="open-section-header">
+    <h2 id="about-title">about</h2>
+    <span aria-hidden="true">~/about</span>
+  </header>
+  <div class="prose">
+    {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</section>

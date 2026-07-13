@@ -1,0 +1,23 @@
+---
+type Props = {
+  id: string;
+  title: string;
+  path: string;
+};
+
+const { id, title, path } = Astro.props;
+---
+
+<section
+  class="section-box"
+  id={id}
+  box-="square"
+  shear-="top"
+  aria-labelledby={`${id}-title`}
+>
+  <header class="section-box-header">
+    <h2 id={`${id}-title`}>{title}</h2>
+    <span aria-hidden="true">{path}</span>
+  </header>
+  <slot />
+</section>

@@ -1,0 +1,29 @@
+---
+import type { SiteContent } from "../data/site";
+
+type Props = SiteContent["introduction"];
+
+const { name, role, summary, asciiArt, links } = Astro.props;
+---
+
+<section class="introduction" id="top" aria-labelledby="introduction-title">
+  {
+    asciiArt.trim() && (
+      <pre class="ascii-art" aria-label={`${name} ASCII art`}>
+        {asciiArt}
+      </pre>
+    )
+  }
+  <h1 id="introduction-title">{name}</h1>
+  <p class="prompt">{role}</p>
+  <p class="introduction-summary">{summary}</p>
+  <ul class="inline-links" aria-label="External profiles">
+    {
+      links.map((link) => (
+        <li>
+          <a href={link.href}>[{link.label}]</a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

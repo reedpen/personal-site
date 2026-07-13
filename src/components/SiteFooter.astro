@@ -1,0 +1,13 @@
+---
+type Props = {
+  text: string;
+  email: string;
+};
+
+const { text, email } = Astro.props;
+---
+
+<footer class="site-footer">
+  <span>{text}</span>
+  <a href={`mailto:${email}`}>let's talk <span aria-hidden="true">→</span></a>
+</footer>

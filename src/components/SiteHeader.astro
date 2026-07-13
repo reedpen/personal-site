@@ -1,0 +1,22 @@
+---
+import type { SiteContent } from "../data/site";
+
+type Props = SiteContent["navigation"];
+
+const { label, links } = Astro.props;
+---
+
+<header class="site-header">
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a class="nav-label" href="#top">{label}</a>
+    <ul class="nav-links">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

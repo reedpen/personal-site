@@ -1,0 +1,35 @@
+---
+import type { WorkEntry } from "../data/site";
+import SectionBox from "./SectionBox.astro";
+
+type Props = {
+  entries: readonly WorkEntry[];
+};
+
+const { entries } = Astro.props;
+---
+
+<SectionBox id="work" title="selected work" path="~/history">
+  <div class="entry-list">
+    {
+      entries.map((entry) => (
+        <article class="entry">
+          <header class="entry-header">
+            <h3>
+              {entry.href ? (
+                <a href={entry.href}>{entry.title}</a>
+              ) : (
+                entry.title
+              )}
+            </h3>
+            <div class="entry-meta">
+              {entry.status && <span is-="badge">{entry.status}</span>}
+              <span>{entry.date}</span>
+            </div>
+          </header>
+          <p>{entry.description}</p>
+        </article>
+      ))
+    }
+  </div>
+</SectionBox>

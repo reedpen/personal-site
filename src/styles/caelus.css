@@ -1,0 +1,35 @@
+@layer base {
+  :root,
+  [data-webtui-theme="caelus"] {
+    --caelus-background: #0f0f0f;
+    --caelus-surface: #1e1f1e;
+    --caelus-surface-hover: #272a28;
+    --caelus-foreground: #f4decd;
+    --caelus-muted: #d9cdb5;
+    --caelus-border: #3b403c;
+    --caelus-accent: #ef934d;
+    --caelus-warning: #f4b585;
+    --caelus-error: #f16e65;
+    --caelus-green: #7ec97e;
+    --caelus-blue: #71b4d6;
+    --caelus-magenta: #e28dc6;
+    --caelus-cyan: #7ec9a3;
+
+    --background0: var(--caelus-background);
+    --background1: var(--caelus-surface);
+    --background2: var(--caelus-surface-hover);
+    --background3: var(--caelus-border);
+    --foreground0: var(--caelus-foreground);
+    --foreground1: var(--caelus-muted);
+    --foreground2: var(--caelus-muted);
+    --box-border-color: var(--caelus-border);
+    --separator-color: var(--caelus-border);
+    --table-border-color: var(--caelus-border);
+    --red: var(--caelus-error);
+    --green: var(--caelus-green);
+    --yellow: var(--caelus-accent);
+    --blue: var(--caelus-blue);
+    --magenta: var(--caelus-magenta);
+    --cyan: var(--caelus-cyan);
+  }
+}

@@ -1,0 +1,12 @@
+.git
+.github
+.astro
+dist
+node_modules
+*.log
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx

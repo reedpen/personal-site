@@ -1,0 +1,25 @@
+---
+import AboutSection from "../components/AboutSection.astro";
+import ContactSection from "../components/ContactSection.astro";
+import EducationSection from "../components/EducationSection.astro";
+import Introduction from "../components/Introduction.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import StackSection from "../components/StackSection.astro";
+import WorkSection from "../components/WorkSection.astro";
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout {...site.metadata}>
+  <SiteHeader {...site.navigation} />
+  <main id="main-content">
+    <Introduction {...site.introduction} />
+    <AboutSection paragraphs={site.about} />
+    <WorkSection entries={site.work} />
+    <EducationSection entries={site.education} />
+    <StackSection categories={site.stack} />
+    <ContactSection {...site.contact} />
+  </main>
+  <SiteFooter text={site.footer} email={site.contact.email} />
+</BaseLayout>

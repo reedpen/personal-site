@@ -1,0 +1,45 @@
+---
+import "../styles/global.css";
+
+type Props = {
+  title: string;
+  description: string;
+  author: string;
+  canonicalUrl?: string;
+  socialImage?: string;
+};
+
+const { title, description, author, canonicalUrl, socialImage } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-webtui-theme="caelus">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <meta name="theme-color" content="#0f0f0f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta
+      name="twitter:card"
+      content={socialImage ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">skip to content</a>
+    <div class="site-shell">
+      <slot />
+    </div>
+  </body>
+</html>

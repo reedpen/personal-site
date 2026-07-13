@@ -1,0 +1,25 @@
+# Dependencies and generated output
+node_modules/
+dist/
+.astro/
+
+# Local tooling
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+*.log
+pnpm-debug.log*
+
+# Secrets and local environment overrides
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local deployment state
+tailscale-state/
