@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 
 ARG PNPM_VERSION=11.12.0
 ENV PNPM_HOME=/pnpm
