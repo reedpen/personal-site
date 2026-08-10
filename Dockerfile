@@ -17,7 +17,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm check && pnpm build
 
-FROM ghcr.io/static-web-server/static-web-server:2.43.0-alpine AS runtime
+FROM ghcr.io/static-web-server/static-web-server:2.44.0-alpine AS runtime
 
 COPY --chown=sws:sws sws.toml /home/sws/sws.toml
 COPY --chown=sws:sws --from=build /app/dist/ /home/sws/public/
