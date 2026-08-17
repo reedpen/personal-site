@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "5.3.0",
-    "@webtui/css": "0.1.9",
+    "@webtui/css": "0.1.10",
     "astro": "7.1.4"
   },
   "devDependencies": {
