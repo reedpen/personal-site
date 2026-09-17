@@ -2,7 +2,7 @@
 
 A static, JavaScript-free personal site built with [Astro](https://astro.build/) and [WebTUI](https://webtui.ironclad.sh/). It uses the Caelus color palette, self-hosted JetBrains Mono, and a rootless production container.
 
-The repository currently contains obvious placeholder content. Replace it before publishing.
+The current site content is maintained in one typed data module so it can be kept in sync with the owner's résumé.
 
 ## Requirements
 
@@ -33,7 +33,7 @@ pnpm build
 
 The production site is generated in `dist/`. Astro and Node.js are build-time tools; the delivered website contains static HTML, CSS, fonts, and the favicon.
 
-## Replace the placeholder content
+## Update site content
 
 All personal content lives in [`src/data/site.ts`](src/data/site.ts). Edit that file to change:
 
@@ -41,14 +41,14 @@ All personal content lives in [`src/data/site.ts`](src/data/site.ts). Edit that 
 - Header label and navigation
 - Name, role, summary, and profile links
 - About paragraphs
-- Selected work
+- Experience and projects
 - Education and highlights
 - Categorized technology stack
 - Contact details and footer
 
 Optional fields can be deleted. Components do not render empty ASCII art, statuses, links, locations, or highlights.
 
-Set `metadata.canonicalUrl` only after you know the final public URL. If you add a social-card image, use a public path such as `/social-card.png`. Optional `socialTitle` and `socialDescription` values can override the document metadata for Open Graph and Twitter cards.
+Keep `metadata.canonicalUrl` set to the final public URL. If you add a social-card image, use a public path such as `/social-card.png`. Optional `socialTitle` and `socialDescription` values can override the document metadata for Open Graph and Twitter cards.
 
 ### Add ASCII art
 

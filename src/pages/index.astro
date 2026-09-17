@@ -16,7 +16,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <main id="main-content">
     <Introduction {...site.introduction} />
     <AboutSection paragraphs={site.about} />
-    <WorkSection entries={site.work} />
+    <WorkSection
+      id="experience"
+      title="experience"
+      path="~/experience"
+      entries={site.experience}
+    />
+    <WorkSection
+      id="projects"
+      title="projects"
+      path="~/projects"
+      entries={site.projects}
+    />
     <EducationSection entries={site.education} />
     <StackSection categories={site.stack} />
     <ContactSection {...site.contact} />
