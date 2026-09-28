@@ -3,6 +3,7 @@ import AboutSection from "../components/AboutSection.astro";
 import ContactSection from "../components/ContactSection.astro";
 import EducationSection from "../components/EducationSection.astro";
 import Introduction from "../components/Introduction.astro";
+import Guestbook from "../components/Guestbook.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import StackSection from "../components/StackSection.astro";
@@ -30,6 +31,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     />
     <EducationSection entries={site.education} />
     <StackSection categories={site.stack} />
+    <Guestbook />
     <ContactSection {...site.contact} />
   </main>
   <SiteFooter {...site.footer} email={site.contact.email} />

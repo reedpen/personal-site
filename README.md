@@ -1,19 +1,19 @@
 # Personal site
 
-A static, JavaScript-free personal site built with [Astro](https://astro.build/) and [WebTUI](https://webtui.ironclad.sh/). It uses the Caelus color palette, self-hosted JetBrains Mono, and a rootless production container.
+A personal site built with [Astro](https://astro.build/) and [WebTUI](https://webtui.ironclad.sh/). Astro builds the page, while a small Node server provides a moderated guestbook.
 
 The current site content is maintained in one typed data module so it can be kept in sync with the owner's résumé.
 
 ## Requirements
 
-- Node.js 22.12 or newer
-- pnpm 11.12.0
+- Node.js 26 or newer
+- pnpm 12.4.2
 - Docker with Compose, if you want the production container
 
 Install the pinned pnpm release through your operating system package manager or with:
 
 ```sh
-npm install --global pnpm@11.12.0
+npm install --global pnpm@12.4.2
 ```
 
 ## Local development
@@ -31,7 +31,7 @@ pnpm format:check
 pnpm build
 ```
 
-The production site is generated in `dist/`. Astro and Node.js are build-time tools; the delivered website contains static HTML, CSS, fonts, and the favicon.
+The production page is generated in `dist/`. The Node server serves those files and the guestbook API. To try the guestbook locally, run `pnpm build`, then `DATA_DIR=./.local-data node server/index.mjs` and open `http://127.0.0.1:8080/`. Rebuild after changing Astro files. The Astro development server does not proxy the API route.
 
 ## Update site content
 
@@ -89,6 +89,22 @@ No Astro component needs to change.
 
 Font licenses and pinned asset provenance are recorded in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
+## Guestbook
+
+Visitors can leave a name and a message. Submissions remain private until you approve them. The server stores them in a SQLite database in the `guestbook-data` Compose volume. Only the 50 newest approved entries are shown. A honeypot and per-address submission limit reduce spam; approval is the final gate. The message is displayed as plain text, not HTML.
+
+If the site runs behind a trusted reverse proxy, set `TRUST_PROXY=1` in `.env` and configure that proxy to overwrite `X-Forwarded-For` with the real client address. Otherwise the submission limit uses the direct connection address, which may be shared by all visitors behind a proxy.
+
+Review pending entries on the host running Compose:
+
+```sh
+docker compose exec site node scripts/guestbook.mjs list
+docker compose exec site node scripts/guestbook.mjs approve 1
+docker compose exec site node scripts/guestbook.mjs reject 2
+```
+
+Back up the `guestbook-data` volume to preserve messages.
+
 ## Production container
 
 Build and run the hardened Compose service:
@@ -99,11 +115,10 @@ docker compose up --build -d
 
 The site is available on port `8080`, and `GET /health` reports container health. The runtime image:
 
-- Runs Static Web Server as its unprivileged `sws` user
-- Contains no Node.js runtime or source files
+- Runs Node.js as its unprivileged `node` user
+- Contains only the built site, API server, and guestbook moderation command
 - Drops Linux capabilities and blocks privilege escalation in Compose
 - Uses a read-only filesystem with a small temporary filesystem
-- Compresses responses
 - Revalidates HTML and caches fingerprinted Astro assets immutably
 - Applies a restrictive content security policy and related response headers
 
@@ -111,7 +126,7 @@ Connect a reverse proxy or hosting platform to container port `8080`. TLS, HSTS,
 
 ## Credential safety
 
-The website needs no runtime secrets. Do not add credentials to the image, Compose file, source data, or Docker build arguments.
+The guestbook needs no runtime secrets. Do not add credentials to the image, source data, or Docker build arguments.
 
 - Store deployment, registry, DNS, and SSH credentials in your platform's secret store.
 - Prefer narrowly scoped, expiring credentials.

@@ -90,6 +90,7 @@ export const site = {
       { label: "projects", href: "#projects" },
       { label: "education", href: "#education" },
       { label: "skills", href: "#stack" },
+      { label: "guestbook", href: "#guestbook" },
       { label: "contact", href: "#contact" },
     ],
   },

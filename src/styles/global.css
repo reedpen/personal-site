@@ -154,6 +154,93 @@
     padding-block: 1lh;
   }
 
+  .guestbook-entries li > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5lh 1ch;
+  }
+
+  .guestbook-intro,
+  .guestbook-empty,
+  .guestbook-entries time {
+    color: var(--foreground1);
+  }
+
+  .guestbook-form {
+    display: grid;
+    max-width: 60ch;
+    gap: 0.5lh;
+  }
+
+  .guestbook-form label {
+    color: var(--caelus-accent);
+  }
+
+  .guestbook-form input,
+  .guestbook-form textarea {
+    width: 100%;
+    padding: 0.5lh 1ch;
+    border: 1px solid var(--caelus-border);
+    border-radius: 0;
+    background: var(--caelus-surface);
+    color: var(--foreground0);
+    font: inherit;
+  }
+
+  .guestbook-form textarea {
+    resize: vertical;
+  }
+
+  .guestbook-form input:focus-visible,
+  .guestbook-form textarea:focus-visible,
+  .guestbook-form button:focus-visible {
+    outline: 2px solid var(--caelus-accent);
+    outline-offset: 2px;
+  }
+
+  .guestbook-form button {
+    justify-self: start;
+    padding: 0.5lh 1ch;
+    border: 1px solid var(--caelus-accent);
+    border-radius: 0;
+    background: var(--caelus-accent);
+    color: var(--background0);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .guestbook-form button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  .guestbook-trap {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .guestbook-entries {
+    display: grid;
+    gap: 1lh;
+    max-width: 70ch;
+    list-style: none;
+  }
+
+  .guestbook-entries li {
+    display: grid;
+    gap: 0.5lh;
+    padding: 1lh 1.5ch;
+    border: 1px solid var(--caelus-border);
+  }
+
+  .guestbook-entries p {
+    white-space: pre-wrap;
+  }
+
   .introduction h1 {
     max-width: 100%;
     font-size: clamp(2rem, 8vw, 3.5rem);

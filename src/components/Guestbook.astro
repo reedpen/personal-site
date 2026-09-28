@@ -1,0 +1,113 @@
+<section
+  class="guestbook open-section"
+  id="guestbook"
+  aria-labelledby="guestbook-title"
+>
+  <header class="open-section-header">
+    <h2 id="guestbook-title">guestbook</h2>
+    <span aria-hidden="true">~/guestbook</span>
+  </header>
+  <p class="guestbook-intro">
+    Leave a note. Entries appear after I approve them.
+  </p>
+  <form id="guestbook-form" class="guestbook-form">
+    <label for="guestbook-name">name</label>
+    <input
+      id="guestbook-name"
+      name="name"
+      maxlength="80"
+      required
+      autocomplete="name"
+    />
+    <label for="guestbook-message">message</label>
+    <textarea
+      id="guestbook-message"
+      name="message"
+      maxlength="1000"
+      rows="4"
+      required></textarea>
+    <div class="guestbook-trap" aria-hidden="true">
+      <label for="guestbook-website">website</label>
+      <input
+        id="guestbook-website"
+        name="website"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+    <button type="submit">sign guestbook</button>
+    <p id="guestbook-feedback" role="status" aria-live="polite"></p>
+  </form>
+  <ol
+    id="guestbook-entries"
+    class="guestbook-entries"
+    aria-label="Guestbook entries"
+  >
+  </ol>
+  <p id="guestbook-empty" class="guestbook-empty">Loading entries…</p>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#guestbook-form");
+  const entries =
+    document.querySelector<HTMLOListElement>("#guestbook-entries");
+  const empty = document.querySelector<HTMLElement>("#guestbook-empty");
+  const feedback = document.querySelector<HTMLElement>("#guestbook-feedback");
+
+  async function loadEntries() {
+    if (!entries || !empty) return;
+    try {
+      const response = await fetch("/api/guestbook", { cache: "no-store" });
+      if (!response.ok) throw new Error("Guestbook unavailable");
+      const data = await response.json();
+      entries.replaceChildren();
+      for (const entry of data.entries) {
+        const item = document.createElement("li");
+        const heading = document.createElement("div");
+        const name = document.createElement("strong");
+        const date = document.createElement("time");
+        const message = document.createElement("p");
+        name.textContent = entry.name;
+        date.dateTime = entry.createdAt;
+        date.textContent = new Date(entry.createdAt).toLocaleDateString();
+        message.textContent = entry.message;
+        heading.append(name, date);
+        item.append(heading, message);
+        entries.append(item);
+      }
+      empty.textContent = data.entries.length
+        ? ""
+        : "Be the first to leave a note.";
+    } catch {
+      empty.textContent = "Guestbook entries are unavailable right now.";
+    }
+  }
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!feedback || !form) return;
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+    if (button) button.disabled = true;
+    feedback.textContent = "Sending…";
+    try {
+      const body = Object.fromEntries(new FormData(form));
+      const response = await fetch("/api/guestbook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result.error || "Could not send your note.");
+      feedback.textContent = "Thanks! Your note is waiting for approval.";
+      form.reset();
+    } catch (error) {
+      feedback.textContent =
+        error instanceof Error ? error.message : "Could not send your note.";
+    } finally {
+      if (button) button.disabled = false;
+    }
+  });
+
+  loadEntries();
+</script>

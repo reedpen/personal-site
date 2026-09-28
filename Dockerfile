@@ -2,7 +2,7 @@
 
 FROM node:26-alpine AS build
 
-ARG PNPM_VERSION=11.12.0
+ARG PNPM_VERSION=12.4.2
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 ENV ASTRO_TELEMETRY_DISABLED=1
@@ -17,15 +17,18 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm check && pnpm build
 
-FROM ghcr.io/static-web-server/static-web-server:2.43.0-alpine AS runtime
+FROM node:26-alpine AS runtime
 
-COPY --chown=sws:sws sws.toml /home/sws/sws.toml
-COPY --chown=sws:sws --from=build /app/dist/ /home/sws/public/
-
-ENV SERVER_CONFIG_FILE=/home/sws/sws.toml
-
-USER sws
+WORKDIR /app
+COPY --chown=node:node --from=build /app/dist/ ./dist/
+COPY --chown=node:node server/ ./server/
+COPY --chown=node:node scripts/guestbook.mjs ./scripts/guestbook.mjs
+RUN mkdir /data && chown node:node /data
+ENV NODE_ENV=production DATA_DIR=/data PORT=8080
+USER node
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --quiet --spider http://127.0.0.1:8080/health || exit 1
+
+CMD ["node", "server/index.mjs"]

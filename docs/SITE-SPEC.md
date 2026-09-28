@@ -1,6 +1,6 @@
 # Personal Site Specification
 
-Status: agreed during the grilling session; implementation has not started.
+Status: original first-release specification. The later moderated guestbook requirement supersedes its static-only and no-JavaScript constraints. See the README for the current architecture and setup.
 
 ## Product Goal
 

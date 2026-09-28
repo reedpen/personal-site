@@ -6,6 +6,10 @@ services:
     ports:
       - "8080:8080"
     read_only: true
+    environment:
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+    volumes:
+      - guestbook-data:/data
     tmpfs:
       - /tmp:size=16m,mode=1777
     security_opt:
@@ -19,3 +23,6 @@ services:
       timeout: 3s
       start_period: 5s
       retries: 3
+
+volumes:
+  guestbook-data:
