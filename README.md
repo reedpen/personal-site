@@ -113,7 +113,7 @@ Build and run the hardened Compose service:
 docker compose up --build -d
 ```
 
-The site is available on port `8080`, and `GET /health` reports container health. The runtime image:
+The site is available on `127.0.0.1:8080` by default, and `GET /health` reports container health. Set `SITE_BIND_ADDRESS` to another host address if an external proxy needs to reach it. The runtime image:
 
 - Runs Node.js as its unprivileged `node` user
 - Contains only the built site, API server, and guestbook moderation command
