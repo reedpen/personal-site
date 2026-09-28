@@ -170,8 +170,8 @@ importers:
         specifier: 5.3.0
         version: 5.3.0
       '@webtui/css':
-        specifier: 0.1.9
-        version: 0.1.9
+        specifier: 0.1.10
+        version: 0.1.10
       astro:
         specifier: 7.1.4
         version: 7.1.4(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(yaml@2.9.0)
@@ -929,8 +929,8 @@ packages:
   '@vscode/l10n@0.0.18':
     resolution: {integrity: sha512-KYSIHVmslkaCDyw013pphY+d7x1qV8IZupYfeIfzNA+nsaWHbn5uPuQRvdRFsa9zFzGeudPuoGoZ1Op4jrJXIQ==}
 
-  '@webtui/css@0.1.9':
-    resolution: {integrity: sha512-frEwcxRihw3VlmUxLzu5gsvp2KaPtETJvKKgCFHq+9KJ/kqZrgGoil9W56SOgW3T6/9CMtRG8fciU4yixGwPOg==}
+  '@webtui/css@0.1.10':
+    resolution: {integrity: sha512-iovJnGDbhi0vaaOjpG+i56HGKx5hHls8JhhQxwPTl5b5ddce7PO+r7F+S4EObYjQlaa1RfClahkmpiNF+R8y8w==}
 
   ajv-draft-04@1.0.0:
     resolution: {integrity: sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw==}
@@ -2534,7 +2534,7 @@ snapshots:
 
   '@vscode/l10n@0.0.18': {}
 
-  '@webtui/css@0.1.9': {}
+  '@webtui/css@0.1.10': {}
 
   ajv-draft-04@1.0.0(ajv@8.20.0):
     optionalDependencies:
