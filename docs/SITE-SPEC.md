@@ -1,6 +1,6 @@
 # Personal Site Specification
 
-Status: original first-release specification. The later moderated guestbook requirement supersedes its static-only and no-JavaScript constraints, and the tech and media blogs supersede its blog non-goals. See the README for the current architecture and setup.
+Status: original first-release specification. The later moderated guestbook requirement supersedes its static-only and no-JavaScript constraints, the tech and media blogs supersede its blog non-goals, and Vercel hosting (ADR 0002) supersedes its container and deployment sections. See the README for the current architecture and setup.
 
 ## Product Goal
 

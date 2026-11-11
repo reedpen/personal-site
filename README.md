@@ -1,14 +1,13 @@
 # Personal site
 
-A personal site built with [Astro](https://astro.build/) and [WebTUI](https://webtui.ironclad.sh/). Astro builds the page, while a small Node server provides a moderated guestbook.
+A personal site built with [Astro](https://astro.build/) and [WebTUI](https://webtui.ironclad.sh/). Astro builds the pages, and a Vercel function provides the guestbook.
 
 The current site content is maintained in one typed data module so it can be kept in sync with the owner's résumé.
 
 ## Requirements
 
-- Node.js 26 or newer
+- Node.js 22.12 or newer
 - pnpm 12.4.2
-- Docker with Compose, if you want the production container
 
 Install the pinned pnpm release through your operating system package manager or with:
 
@@ -28,10 +27,11 @@ Useful checks:
 ```sh
 pnpm check
 pnpm format:check
+pnpm test
 pnpm build
 ```
 
-The production pages are generated in `dist/`. The Node server serves those files and the guestbook API. To try the guestbook locally, run `pnpm build`, then `DATA_DIR=./.local-data node server/index.mjs` and open `http://127.0.0.1:8080/`. Rebuild after changing Astro files. The Astro development server does not proxy the API route.
+The production pages are generated in `dist/`. `pnpm test` runs the guestbook tests against an in-memory Postgres database, so it needs no database account.
 
 ## Update site content
 
@@ -92,48 +92,59 @@ Font licenses and pinned asset provenance are recorded in [`THIRD_PARTY_NOTICES.
 
 ## Guestbook
 
-Visitors can leave a name and a message. Submissions remain private until you approve them. The server stores them in a SQLite database in the `guestbook-data` Compose volume. Only the 50 newest approved entries are shown. A honeypot and per-address submission limit reduce spam; approval is the final gate. The message is displayed as plain text, not HTML.
+Visitors can leave a name and a message, which appears on the site immediately. The 50 newest entries are shown, and messages are displayed as plain text, not HTML, so links are not clickable. To limit spam, a hidden honeypot field catches simple bots, each address can post five notes an hour, and the whole guestbook accepts 30 notes an hour.
 
-If the site runs behind a trusted reverse proxy, set `TRUST_PROXY=1` in `.env` and configure that proxy to overwrite `X-Forwarded-For` with the real client address. Otherwise the submission limit uses the direct connection address, which may be shared by all visitors behind a proxy.
+The guestbook API is the Vercel function in [`api/guestbook.js`](api/guestbook.js). Entries are stored in a [Neon](https://neon.com/) Postgres database. Raw IP addresses are never stored: the per-address limit uses a hash, which is erased after a day.
 
-Review pending entries on the host running Compose:
+### Set up the database
+
+1. In the Vercel project, open **Storage**, create a **Neon** Postgres database on the free plan, and connect it to the project. This adds `DATABASE_URL` to the project's environment variables.
+2. Optionally, add a `GUESTBOOK_SALT` environment variable set to a long random value, such as the output of `openssl rand -hex 32`. It makes address hashes harder to reverse.
+3. Link this folder and download the environment variables:
+
+   ```sh
+   pnpm dlx vercel link
+   pnpm dlx vercel env pull .env.local --environment=production
+   ```
+
+   `--environment=production` is needed because the Neon integration adds its variables to the Preview and Production environments only.
+
+4. Create the table:
+
+   ```sh
+   pnpm guestbook setup
+   ```
+
+### Remove entries
 
 ```sh
-docker compose exec site node scripts/guestbook.mjs list
-docker compose exec site node scripts/guestbook.mjs approve 1
-docker compose exec site node scripts/guestbook.mjs reject 2
+pnpm guestbook list        # the 20 newest entries, with their IDs
+pnpm guestbook list 100    # more entries
+pnpm guestbook remove 7    # remove entry #7
+pnpm guestbook remove 7 8  # remove several
 ```
 
-Back up the `guestbook-data` volume to preserve messages.
+`remove` deletes the entries and clears Vercel's cached copy of the list, so they disappear from the site immediately. These commands read `DATABASE_URL` from the ignored `.env.local` file.
 
-## Production container
+### Staying on the free tier
 
-Build and run the hardened Compose service:
+The list of entries is cached at Vercel's edge, so page views do not query the database. The cache is cleared whenever someone posts or you remove an entry, and otherwise expires after an hour. Neon's free compute pauses after a few minutes without queries, so the database runs only briefly around new posts and keeps well within the free allowance. If clearing the cache ever fails, changes still appear within an hour.
 
-```sh
-docker compose up --build -d
-```
+To try the guestbook locally, run `pnpm dlx vercel dev`. `pnpm dev` serves the site without the API, so the guestbook shows that entries are unavailable.
 
-The site is available on `127.0.0.1:8080` by default, and `GET /health` reports container health. Set `SITE_BIND_ADDRESS` to another host address if an external proxy needs to reach it. The runtime image:
+## Deployment
 
-- Runs Node.js as its unprivileged `node` user
-- Contains only the built site, API server, and guestbook moderation command
-- Drops Linux capabilities and blocks privilege escalation in Compose
-- Uses a read-only filesystem with a small temporary filesystem
-- Revalidates HTML and caches fingerprinted Astro assets immutably
-- Applies a restrictive content security policy and related response headers
-
-Connect a reverse proxy or hosting platform to container port `8080`. TLS, HSTS, DNS, domains, and public ingress intentionally remain outside this repository, so the same image can run at home, on a VPS, or on a container service.
+The site deploys to Vercel from GitHub. Vercel builds the Astro site as static files and deploys `api/guestbook.js` as a function. [`vercel.json`](vercel.json) applies the content security policy and related security headers, caches fingerprinted Astro assets immutably, and serves the RSS feeds with the RSS content type.
 
 ## Credential safety
 
-The guestbook needs no runtime secrets. Do not add credentials to the image, source data, or Docker build arguments.
+The only runtime secret is `DATABASE_URL`, which Vercel stores. Never commit it or paste it elsewhere.
 
-- Store deployment, registry, DNS, and SSH credentials in your platform's secret store.
+- Store deployment, database, and DNS credentials in your platform's secret store.
 - Prefer narrowly scoped, expiring credentials.
-- Keep local environment overrides in ignored `.env` files.
+- Keep local environment values in ignored `.env.local` files.
 - Never paste secrets into issues, pull requests, screenshots, or logs.
-- Revoke an exposed credential immediately; removing it from a later commit is not enough.
+- Revoke an exposed credential immediately; removing it from a later commit is not enough. For the database, reset the Neon password and pull the new `DATABASE_URL`.
 
 See [`SECURITY.md`](SECURITY.md) for private vulnerability reporting and the full repository policy.
 
@@ -193,10 +204,11 @@ Feeds include each post's full text and use `metadata.canonicalUrl` for absolute
 
 Frontmatter is validated by [`src/content.config.ts`](src/content.config.ts), so `pnpm check` and `pnpm build` report missing or invalid fields.
 
-Code blocks are highlighted with Prism, which uses CSS classes colored with the Caelus palette in `global.css`. The site does not use Astro's default Shiki highlighter because its inline styles are blocked by the server's content security policy.
+Code blocks are highlighted with Prism, which uses CSS classes colored with the Caelus palette in `global.css`. The site does not use Astro's default Shiki highlighter because its inline styles are blocked by the site's content security policy.
 
 ## Project decisions
 
 - [`docs/SITE-SPEC.md`](docs/SITE-SPEC.md) contains the approved implementation specification.
 - [`CONTEXT.md`](CONTEXT.md) defines the project's canonical language.
 - [`docs/adr/0001-use-astro-for-a-static-zero-javascript-site.md`](docs/adr/0001-use-astro-for-a-static-zero-javascript-site.md) records the static Astro decision.
+- [`docs/adr/0002-host-on-vercel-with-a-neon-guestbook.md`](docs/adr/0002-host-on-vercel-with-a-neon-guestbook.md) records the move from a self-hosted container to Vercel.

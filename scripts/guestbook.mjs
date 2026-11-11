@@ -1,31 +1,69 @@
-import { db } from "../server/guestbook.mjs";
+// Guestbook maintenance. Run through `pnpm guestbook`, which loads
+// DATABASE_URL from .env.local (created by `vercel env pull`).
+import { spawnSync } from "node:child_process";
+import {
+  cacheTag,
+  recentEntries,
+  removeEntry,
+  setup,
+} from "../api/_lib/guestbook.js";
 
-const [command, id] = process.argv.slice(2);
-if (command === "list") {
-  for (const entry of db
-    .prepare(
-      "SELECT id, name, message, created_at, status FROM entries WHERE status = 'pending' ORDER BY id ASC",
-    )
-    .all()) {
+const usage = "Usage: pnpm guestbook setup | list [COUNT] | remove ID...";
+const [command, ...args] = process.argv.slice(2);
+
+/** Clears Vercel's cached entry list so a removal shows immediately. */
+function clearCache() {
+  const result = spawnSync(
+    "pnpm",
+    [
+      "dlx",
+      "vercel",
+      "cache",
+      "dangerously-delete",
+      "--tag",
+      cacheTag,
+      "--yes",
+    ],
+    { stdio: "inherit" },
+  );
+  if (result.status !== 0)
+    console.error(
+      "Could not clear Vercel's cache; removed entries disappear from the site within an hour.",
+    );
+}
+
+if (command === "setup") {
+  await setup();
+  console.log("Guestbook table is ready.");
+} else if (
+  command === "list" &&
+  args.length <= 1 &&
+  /^\d*$/.test(args[0] ?? "")
+) {
+  const entries = await recentEntries(Number(args[0] || 20));
+  if (entries.length === 0) console.log("The guestbook is empty.");
+  for (const entry of entries.reverse()) {
     console.log(
-      `\n#${entry.id} · ${entry.created_at} · ${entry.name}\n${entry.message}`,
+      `\n#${entry.id} · ${entry.createdAt} · ${entry.name}\n${entry.message}`,
     );
   }
-} else if (["approve", "reject"].includes(command) && /^\d+$/.test(id || "")) {
-  const status = command === "approve" ? "approved" : "rejected";
-  const result = db
-    .prepare(
-      "UPDATE entries SET status = ? WHERE id = ? AND status = 'pending'",
-    )
-    .run(status, Number(id));
-  if (result.changes !== 1) {
-    console.error("No pending entry with that ID.");
-    process.exitCode = 1;
-  } else {
-    console.log(`Entry #${id} ${status}.`);
+} else if (
+  command === "remove" &&
+  args.length > 0 &&
+  args.every((id) => /^\d+$/.test(id))
+) {
+  let removed = 0;
+  for (const id of args) {
+    if (await removeEntry(Number(id))) {
+      console.log(`Removed entry #${id}.`);
+      removed++;
+    } else {
+      console.error(`No entry #${id}.`);
+      process.exitCode = 1;
+    }
   }
+  if (removed > 0) clearCache();
 } else {
-  console.error("Usage: node scripts/guestbook.mjs list|approve ID|reject ID");
+  console.error(usage);
   process.exitCode = 1;
 }
-db.close();

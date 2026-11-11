@@ -7,9 +7,7 @@
     <h2 id="guestbook-title">guestbook</h2>
     <span aria-hidden="true">~/guestbook</span>
   </header>
-  <p class="guestbook-intro">
-    Leave a note. Entries appear after I approve them.
-  </p>
+  <p class="guestbook-intro">Leave a note for everyone who visits.</p>
   <form id="guestbook-form" class="guestbook-form">
     <label for="guestbook-name">name</label>
     <input
@@ -57,7 +55,7 @@
   async function loadEntries() {
     if (!entries || !empty) return;
     try {
-      const response = await fetch("/api/guestbook", { cache: "no-store" });
+      const response = await fetch("/api/guestbook");
       if (!response.ok) throw new Error("Guestbook unavailable");
       const data = await response.json();
       entries.replaceChildren();
@@ -99,8 +97,9 @@
       const result = await response.json();
       if (!response.ok)
         throw new Error(result.error || "Could not send your note.");
-      feedback.textContent = "Thanks! Your note is waiting for approval.";
+      feedback.textContent = "Thanks for signing!";
       form.reset();
+      await loadEntries();
     } catch (error) {
       feedback.textContent =
         error instanceof Error ? error.message : "Could not send your note.";
