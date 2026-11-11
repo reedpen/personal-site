@@ -384,10 +384,15 @@
   .stack-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 17ch), 1fr));
+    /* Hides the borders of the outermost cells, which would double the box's. */
+    overflow: hidden;
   }
 
   .stack-category {
     min-width: 0;
+    /* Each cell's right and bottom borders overhang its grid area by 1px. */
+    margin-inline-end: -1px;
+    margin-block-end: -1px;
     padding: 1lh 2ch;
     border-block-end: 1px solid var(--caelus-border);
     border-inline-end: 1px solid var(--caelus-border);
