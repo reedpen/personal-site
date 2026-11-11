@@ -12,9 +12,9 @@ const { prompt, heading, body, email, links = [] } = Astro.props;
   <h2 id="contact-title">{heading}</h2>
   <p>{body}</p>
   <address>
-    <a class="contact-email" href={`mailto:${email}`}
-      >{email} <span aria-hidden="true">→</span></a
-    >
+    <a class="contact-email" href={`mailto:${email}`}>
+      {email} <span aria-hidden="true">→</span>
+    </a>
   </address>
   <InlineLinks links={links} ariaLabel="Other contact links" />
 </section>

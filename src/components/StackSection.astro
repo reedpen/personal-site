@@ -19,20 +19,18 @@ const categoryId = (label: string, index: number) =>
 
 <SectionBox id="stack" title="technology stack" path="~/stack">
   <div class="stack-grid">
-    {
-      categories.map((category, index) => (
-        <section
-          class="stack-category"
-          aria-labelledby={categoryId(category.label, index)}
-        >
-          <h3 id={categoryId(category.label, index)}>{category.label}</h3>
-          <ul>
-            {category.items.map((item) => (
-              <li>{item}</li>
-            ))}
-          </ul>
-        </section>
-      ))
-    }
+    {categories.map((category, index) => (
+      <section
+        class="stack-category"
+        aria-labelledby={categoryId(category.label, index)}
+      >
+        <h3 id={categoryId(category.label, index)}>{category.label}</h3>
+        <ul>
+          {category.items.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </section>
+    ))}
   </div>
 </SectionBox>

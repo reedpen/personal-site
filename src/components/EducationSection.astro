@@ -11,28 +11,26 @@ const { entries } = Astro.props;
 
 <SectionBox id="education" title="education" path="~/school">
   <div class="entry-list">
-    {
-      entries.map((entry) => (
-        <article class="entry">
-          <header class="entry-header">
-            <div>
-              <h3>{entry.institution}</h3>
-              <p class="credential">{entry.credential}</p>
-            </div>
-            <div class="entry-meta education-meta">
-              <span>{entry.date}</span>
-              {entry.location && <span>{entry.location}</span>}
-            </div>
-          </header>
-          {entry.highlights && entry.highlights.length > 0 && (
-            <ul class="highlight-list">
-              {entry.highlights.map((highlight) => (
-                <li>{highlight}</li>
-              ))}
-            </ul>
-          )}
-        </article>
-      ))
-    }
+    {entries.map((entry) => (
+      <article class="entry">
+        <header class="entry-header">
+          <div>
+            <h3>{entry.institution}</h3>
+            <p class="credential">{entry.credential}</p>
+          </div>
+          <div class="entry-meta education-meta">
+            <span>{entry.date}</span>
+            {entry.location && <span>{entry.location}</span>}
+          </div>
+        </header>
+        {entry.highlights && entry.highlights.length > 0 && (
+          <ul class="highlight-list">
+            {entry.highlights.map((highlight) => (
+              <li>{highlight}</li>
+            ))}
+          </ul>
+        )}
+      </article>
+    ))}
   </div>
 </SectionBox>

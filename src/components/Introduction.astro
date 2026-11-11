@@ -8,13 +8,9 @@ const { name, role, summary, asciiArt = "", links = [] } = Astro.props;
 ---
 
 <section class="introduction" id="top" aria-labelledby="introduction-title">
-  {
-    asciiArt.trim() && (
-      <pre class="ascii-art" aria-label={`${name} ASCII art`}>
+  {asciiArt.trim() && <pre class="ascii-art" aria-label={`${name} ASCII art`}>
         {asciiArt}
-      </pre>
-    )
-  }
+      </pre>}
   <h1 id="introduction-title">{name}</h1>
   <p class="section-label">{role}</p>
   <p class="introduction-summary">{summary}</p>

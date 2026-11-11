@@ -14,42 +14,40 @@ const { id, title, path, entries } = Astro.props;
 
 <SectionBox id={id} title={title} path={path}>
   <div class="entry-list">
-    {
-      entries.map((entry) => (
-        <article class="entry">
-          <header class="entry-header">
-            <div>
-              <h3>
-                {entry.href ? (
-                  <a href={entry.href}>{entry.title}</a>
-                ) : (
-                  entry.title
-                )}
-              </h3>
-              {entry.organization && (
-                <p class="credential">{entry.organization}</p>
+    {entries.map((entry) => (
+      <article class="entry">
+        <header class="entry-header">
+          <div>
+            <h3>
+              {entry.href ? (
+                <a href={entry.href}>{entry.title}</a>
+              ) : (
+                entry.title
               )}
-              {entry.technologies && (
-                <p class="credential">{entry.technologies}</p>
-              )}
-            </div>
-            {(entry.status || entry.date) && (
-              <div class="entry-meta">
-                {entry.status && <span is-="badge">{entry.status}</span>}
-                {entry.date && <span>{entry.date}</span>}
-              </div>
+            </h3>
+            {entry.organization && (
+              <p class="credential">{entry.organization}</p>
             )}
-          </header>
-          <p>{entry.description}</p>
-          {entry.highlights && entry.highlights.length > 0 && (
-            <ul class="highlight-list">
-              {entry.highlights.map((highlight) => (
-                <li>{highlight}</li>
-              ))}
-            </ul>
+            {entry.technologies && (
+              <p class="credential">{entry.technologies}</p>
+            )}
+          </div>
+          {(entry.status || entry.date) && (
+            <div class="entry-meta">
+              {entry.status && <span is-="badge">{entry.status}</span>}
+              {entry.date && <span>{entry.date}</span>}
+            </div>
           )}
-        </article>
-      ))
-    }
+        </header>
+        <p>{entry.description}</p>
+        {entry.highlights && entry.highlights.length > 0 && (
+          <ul class="highlight-list">
+            {entry.highlights.map((highlight) => (
+              <li>{highlight}</li>
+            ))}
+          </ul>
+        )}
+      </article>
+    ))}
   </div>
 </SectionBox>

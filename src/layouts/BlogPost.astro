@@ -35,16 +35,14 @@ const { Content } = await render(post);
         <p class="post-dates">
           {draft && <span is-="badge">draft</span>}
           <time datetime={date.toISOString()}>{formatDate(date)}</time>
-          {
-            updated && (
-              <span>
-                · updated{" "}
-                <time datetime={updated.toISOString()}>
-                  {formatDate(updated)}
-                </time>
-              </span>
-            )
-          }
+          {updated && (
+            <span>
+              · updated{" "}
+              <time datetime={updated.toISOString()}>
+                {formatDate(updated)}
+              </time>
+            </span>
+          )}
         </p>
       </header>
       <div class="post-body">

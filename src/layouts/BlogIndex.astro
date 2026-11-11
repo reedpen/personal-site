@@ -33,37 +33,37 @@ const feed = blogFeed(blog);
       <h1 id="blog-title">{content.title}</h1>
       <p class="introduction-summary">{content.description}</p>
       <ul class="inline-links" aria-label="Subscribe">
-        <li><a href={feed.href}>[rss]</a></li>
+        <li>
+          <a href={feed.href}>[rss]</a>
+        </li>
       </ul>
     </section>
     <SectionBox id="posts" title="posts" path={count}>
-      {
-        posts.length > 0 ? (
-          <div class="entry-list">
-            {posts.map((post) => (
-              <article class="entry">
-                <header class="entry-header">
-                  <div>
-                    <h3>
-                      <a href={postHref(post)}>{post.data.title}</a>
-                    </h3>
-                    <PostDetails post={post} />
-                  </div>
-                  <div class="entry-meta">
-                    {post.data.draft && <span is-="badge">draft</span>}
-                    <time datetime={post.data.date.toISOString()}>
-                      {formatDate(post.data.date)}
-                    </time>
-                  </div>
-                </header>
-                <p>{post.data.description}</p>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <p class="empty-state">No posts yet.</p>
-        )
-      }
+      {posts.length > 0 ? (
+        <div class="entry-list">
+          {posts.map((post) => (
+            <article class="entry">
+              <header class="entry-header">
+                <div>
+                  <h3>
+                    <a href={postHref(post)}>{post.data.title}</a>
+                  </h3>
+                  <PostDetails post={post} />
+                </div>
+                <div class="entry-meta">
+                  {post.data.draft && <span is-="badge">draft</span>}
+                  <time datetime={post.data.date.toISOString()}>
+                    {formatDate(post.data.date)}
+                  </time>
+                </div>
+              </header>
+              <p>{post.data.description}</p>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">No posts yet.</p>
+      )}
     </SectionBox>
   </main>
   <SiteFooter {...site.footer} email={site.contact.email} />

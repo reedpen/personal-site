@@ -9,14 +9,12 @@ type Props = {
 const { links, ariaLabel } = Astro.props;
 ---
 
-{
-  links.length > 0 && (
-    <ul class="inline-links" aria-label={ariaLabel}>
-      {links.map((link) => (
-        <li>
-          <a href={link.href}>[{link.label}]</a>
-        </li>
-      ))}
-    </ul>
-  )
-}
+{links.length > 0 && (
+  <ul class="inline-links" aria-label={ariaLabel}>
+    {links.map((link) => (
+      <li>
+        <a href={link.href}>[{link.label}]</a>
+      </li>
+    ))}
+  </ul>
+)}

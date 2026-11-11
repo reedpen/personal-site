@@ -12,6 +12,8 @@ const { paragraphs } = Astro.props;
     <span aria-hidden="true">~/about</span>
   </header>
   <div class="prose">
-    {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    {paragraphs.map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
   </div>
 </section>

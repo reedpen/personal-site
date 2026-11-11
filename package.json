@@ -20,15 +20,15 @@
   "dependencies": {
     "@fontsource/jetbrains-mono": "5.3.0",
     "@neondatabase/serverless": "1.2.0",
-    "@vercel/functions": "3.9.11",
-    "@webtui/css": "0.1.9",
-    "astro": "7.1.4"
+    "@vercel/functions": "3.10.6",
+    "@webtui/css": "0.1.10",
+    "astro": "7.4.7"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.9",
+    "@astrojs/check": "0.9.12",
     "@electric-sql/pglite": "0.5.13",
-    "prettier": "3.9.6",
-    "prettier-plugin-astro": "0.14.1",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
     "typescript": "6.0.3"
   }
 }

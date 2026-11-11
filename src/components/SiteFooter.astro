@@ -10,5 +10,7 @@ const { text, linkLabel, email } = Astro.props;
 
 <footer class="site-footer">
   <span>{text}</span>
-  <a href={`mailto:${email}`}>{linkLabel} <span aria-hidden="true">→</span></a>
+  <a href={`mailto:${email}`}>
+    {linkLabel} <span aria-hidden="true">→</span>
+  </a>
 </footer>

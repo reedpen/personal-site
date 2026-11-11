@@ -34,22 +34,18 @@ const {
     <meta name="author" content={author} />
     <meta name="theme-color" content="#0f0f0f" />
     <meta property="og:type" content={ogType} />
-    {
-      publishedTime && (
-        <meta
-          property="article:published_time"
-          content={publishedTime.toISOString()}
-        />
-      )
-    }
-    {
-      modifiedTime && (
-        <meta
-          property="article:modified_time"
-          content={modifiedTime.toISOString()}
-        />
-      )
-    }
+    {publishedTime && (
+      <meta
+        property="article:published_time"
+        content={publishedTime.toISOString()}
+      />
+    )}
+    {modifiedTime && (
+      <meta
+        property="article:modified_time"
+        content={modifiedTime.toISOString()}
+      />
+    )}
     <meta property="og:title" content={socialTitle} />
     <meta property="og:description" content={socialDescription} />
     <meta
@@ -69,20 +65,20 @@ const {
       title={site.feed.title}
       href="/rss.xml"
     />
-    {
-      feed && (
-        <link
-          rel="alternate"
-          type="application/rss+xml"
-          title={feed.title}
-          href={feed.href}
-        />
-      )
-    }
+    {feed && (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={feed.title}
+        href={feed.href}
+      />
+    )}
     <title>{title}</title>
   </head>
   <body>
-    <a class="skip-link" href="#main-content">skip to content</a>
+    <a class="skip-link" href="#main-content">
+      skip to content
+    </a>
     <div class="site-shell">
       <slot />
     </div>
