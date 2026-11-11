@@ -1,0 +1,19 @@
+---
+import type { Post } from "../lib/posts";
+
+type Props = { post: Post };
+
+const { post } = Astro.props;
+
+const details: string[] = [];
+if (post.collection === "media") {
+  const { kind, creator, released, rating } = post.data;
+  details.push(kind, creator);
+  if (released) details.push(String(released));
+  if (rating) details.push(`${rating}/5`);
+} else {
+  details.push(...post.data.tags.map((tag) => `#${tag}`));
+}
+---
+
+{details.length > 0 && <p class="credential">{details.join(" · ")}</p>}

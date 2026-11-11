@@ -31,7 +31,7 @@ pnpm format:check
 pnpm build
 ```
 
-The production page is generated in `dist/`. The Node server serves those files and the guestbook API. To try the guestbook locally, run `pnpm build`, then `DATA_DIR=./.local-data node server/index.mjs` and open `http://127.0.0.1:8080/`. Rebuild after changing Astro files. The Astro development server does not proxy the API route.
+The production pages are generated in `dist/`. The Node server serves those files and the guestbook API. To try the guestbook locally, run `pnpm build`, then `DATA_DIR=./.local-data node server/index.mjs` and open `http://127.0.0.1:8080/`. Rebuild after changing Astro files. The Astro development server does not proxy the API route.
 
 ## Update site content
 
@@ -39,6 +39,7 @@ All personal content lives in [`src/data/site.ts`](src/data/site.ts). Edit that 
 
 - Page metadata and author
 - Header label and navigation
+- Tech and media blog headings and descriptions
 - Name, role, summary, and profile links
 - About paragraphs
 - Experience and projects
@@ -136,9 +137,63 @@ The guestbook needs no runtime secrets. Do not add credentials to the image, sou
 
 See [`SECURITY.md`](SECURITY.md) for private vulnerability reporting and the full repository policy.
 
-## Future blog
+## Blogs
 
-No blog route or dead navigation link ships today. When posts are needed, add an Astro content collection for Markdown or MDX and reuse the existing layout and metadata. Add visible blog navigation only after an index and at least one published post exist.
+The site has two Markdown blogs:
+
+| Blog  | Route     | Posts live in        |
+| ----- | --------- | -------------------- |
+| Tech  | `/tech/`  | `src/content/tech/`  |
+| Media | `/media/` | `src/content/media/` |
+
+Each blog's heading and description are in `blogs` in [`src/data/site.ts`](src/data/site.ts). The file name becomes the URL, so `src/content/tech/my-post.md` is published at `/tech/my-post/`.
+
+A blog's navigation link appears only after it has at least one published post. Posts with `draft: true` appear in `pnpm dev` and are left out of production builds. Each folder contains an example draft that shows every supported field.
+
+### Tech post
+
+```md
+---
+title: Post title
+description: One sentence for the post list and social cards.
+date: 2026-11-11
+updated: 2026-11-20 # optional
+tags: [linux, python] # optional
+draft: true # optional; remove to publish
+---
+
+Markdown body.
+```
+
+### Book or movie post
+
+```md
+---
+title: The Left Hand of Darkness
+description: One sentence for the post list and social cards.
+date: 2026-11-11
+kind: book # book or movie
+creator: Ursula K. Le Guin # author or director
+released: 1969 # optional
+rating: 4 # optional, 1–5
+---
+
+Markdown body.
+```
+
+### RSS feeds
+
+| Feed             | Contents              |
+| ---------------- | --------------------- |
+| `/rss.xml`       | Posts from both blogs |
+| `/tech/rss.xml`  | Tech posts            |
+| `/media/rss.xml` | Media posts           |
+
+Feeds include each post's full text and use `metadata.canonicalUrl` for absolute links, so keep that value correct. Every page advertises the combined feed for feed-reader discovery, and blog pages also advertise their own feed and show an `[rss]` link. The combined feed's title and description are in `feed` in `site.ts`. Use absolute URLs for links and images inside posts so they also work in feed readers.
+
+Frontmatter is validated by [`src/content.config.ts`](src/content.config.ts), so `pnpm check` and `pnpm build` report missing or invalid fields.
+
+Code blocks are highlighted with Prism, which uses CSS classes colored with the Caelus palette in `global.css`. The site does not use Astro's default Shiki highlighter because its inline styles are blocked by the server's content security policy.
 
 ## Project decisions
 

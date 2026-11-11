@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths } from "astro";
+import BlogPost from "../../layouts/BlogPost.astro";
+import { publishedPosts, type Post } from "../../lib/posts";
+
+export const getStaticPaths = (async () =>
+  (await publishedPosts("tech")).map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }))) satisfies GetStaticPaths;
+
+type Props = { post: Post<"tech"> };
+
+const { post } = Astro.props;
+---
+
+<BlogPost post={post} />

@@ -1,0 +1,61 @@
+---
+import { render } from "astro:content";
+import PostDetails from "../components/PostDetails.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { site } from "../data/site";
+import { blogFeed, pageMetadata } from "../lib/metadata";
+import { formatDate, postHref, type Post } from "../lib/posts";
+import BaseLayout from "./BaseLayout.astro";
+
+type Props = { post: Post };
+
+const { post } = Astro.props;
+const { title, description, date, updated, draft } = post.data;
+const blog = site.blogs[post.collection];
+const { Content } = await render(post);
+---
+
+<BaseLayout
+  {...pageMetadata(title, description, postHref(post))}
+  ogType="article"
+  publishedTime={date}
+  modifiedTime={updated}
+  feed={blogFeed(post.collection)}
+>
+  <SiteHeader {...site.navigation} current={post.collection} />
+  <main id="main-content">
+    <article class="post" aria-labelledby="post-title">
+      <header class="post-header">
+        <p class="section-label">
+          <a href={`/${post.collection}/`}>{blog.path}</a>
+        </p>
+        <h1 id="post-title">{title}</h1>
+        <PostDetails post={post} />
+        <p class="post-dates">
+          {draft && <span is-="badge">draft</span>}
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          {
+            updated && (
+              <span>
+                · updated{" "}
+                <time datetime={updated.toISOString()}>
+                  {formatDate(updated)}
+                </time>
+              </span>
+            )
+          }
+        </p>
+      </header>
+      <div class="post-body">
+        <Content />
+      </div>
+    </article>
+    <p>
+      <a href={`/${post.collection}/`}>
+        <span aria-hidden="true">←</span> all {blog.title} posts
+      </a>
+    </p>
+  </main>
+  <SiteFooter {...site.footer} email={site.contact.email} />
+</BaseLayout>

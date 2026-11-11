@@ -469,3 +469,186 @@
     flex-direction: row;
   }
 }
+
+@layer components {
+  .nav-links a[aria-current="page"] {
+    color: var(--caelus-accent);
+  }
+
+  .empty-state {
+    padding: 1lh 2ch;
+    color: var(--foreground1);
+  }
+
+  .post {
+    display: grid;
+    gap: 2lh;
+  }
+
+  .post-header {
+    display: grid;
+    gap: 0.5lh;
+  }
+
+  .post-header h1 {
+    font-size: clamp(1.5rem, 5vw, 2.25rem);
+  }
+
+  .post-header .section-label a {
+    text-decoration: none;
+  }
+
+  .post-dates {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1ch;
+    color: var(--foreground1);
+  }
+
+  .post-body {
+    display: grid;
+    max-width: 72ch;
+    gap: 1lh;
+    color: var(--foreground1);
+  }
+
+  .post-body h2,
+  .post-body h3,
+  .post-body h4 {
+    margin-block: 1lh 0;
+    font-size: 1em;
+  }
+
+  .post-body h2::before {
+    content: "## ";
+    color: var(--caelus-accent);
+  }
+
+  .post-body h3::before {
+    content: "### ";
+    color: var(--caelus-accent);
+  }
+
+  .post-body ul,
+  .post-body ol {
+    display: grid;
+    gap: 0.25lh;
+    padding-inline-start: 3ch;
+  }
+
+  .post-body ul {
+    list-style: "— ";
+  }
+
+  .post-body li::marker {
+    color: var(--caelus-accent);
+  }
+
+  .post-body blockquote {
+    margin: 0;
+    padding-inline-start: 2ch;
+    border-inline-start: 1px solid var(--caelus-accent);
+  }
+
+  .post-body hr {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-block-start: 1px solid var(--caelus-border);
+  }
+
+  .post-body img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .post-body table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  .post-body th,
+  .post-body td {
+    padding: 0.25lh 1ch;
+    border: 1px solid var(--caelus-border);
+    text-align: start;
+  }
+
+  .post-body :not(pre) > code {
+    padding-inline: 0.5ch;
+    background: var(--caelus-surface);
+    color: var(--foreground0);
+  }
+
+  .post-body pre {
+    padding: 1lh 2ch;
+    overflow-x: auto;
+    border: 1px solid var(--caelus-border);
+    background: var(--caelus-surface);
+    color: var(--foreground0);
+    line-height: 1.5;
+  }
+
+  .post-body pre code {
+    font: inherit;
+  }
+
+  /* Prism syntax tokens in the Caelus palette. */
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: var(--foreground1);
+    opacity: 0.7;
+  }
+
+  .token.keyword,
+  .token.important,
+  .token.atrule,
+  .token.selector {
+    color: var(--caelus-magenta);
+  }
+
+  .token.string,
+  .token.char,
+  .token.attr-value,
+  .token.regex,
+  .token.inserted {
+    color: var(--caelus-green);
+  }
+
+  .token.number,
+  .token.boolean,
+  .token.constant,
+  .token.symbol {
+    color: var(--caelus-warning);
+  }
+
+  .token.function,
+  .token.attr-name,
+  .token.property {
+    color: var(--caelus-blue);
+  }
+
+  .token.class-name,
+  .token.builtin,
+  .token.tag {
+    color: var(--caelus-cyan);
+  }
+
+  .token.operator,
+  .token.decorator,
+  .token.variable {
+    color: var(--caelus-accent);
+  }
+
+  .token.punctuation {
+    color: var(--foreground1);
+  }
+
+  .token.deleted {
+    color: var(--caelus-error);
+  }
+}

@@ -43,3 +43,15 @@ _Avoid_: Logo, profile image
 **Placeholder content**:
 Temporary Lorem Ipsum content included to exercise the complete layout before the owner supplies Site content.
 _Avoid_: Seed data, demo content
+
+**Tech blog**:
+Dated Markdown posts about software, systems, and tools, published under `/tech/`.
+_Avoid_: Dev log, articles
+
+**Media blog**:
+Dated Markdown posts about books and movies, published under `/media/`. Each post names its kind, its creator, and optionally its release year and a rating out of five.
+_Avoid_: Reviews section, reading list
+
+**Draft**:
+A post marked `draft: true`, visible during local development and omitted from production builds.
+_Avoid_: Unpublished post

@@ -10,6 +10,7 @@ const mime = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
+  ".xml": "application/rss+xml; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
@@ -72,13 +73,22 @@ async function serveStatic(pathname, response) {
     json(response, 400, { error: "Invalid path." });
     return;
   }
-  const file = resolve(root, `.${decoded === "/" ? "/index.html" : decoded}`);
+  // Astro builds each page as <route>/index.html.
+  const file = resolve(
+    root,
+    `.${decoded.endsWith("/") ? `${decoded}index.html` : decoded}`,
+  );
   if (!file.startsWith(root + sep)) {
     json(response, 404, { error: "Not found." });
     return;
   }
   try {
     const info = await stat(file);
+    if (info.isDirectory() && !pathname.startsWith("//")) {
+      response.writeHead(301, { Location: `${pathname}/` });
+      response.end();
+      return;
+    }
     if (!info.isFile()) throw new Error("Not a file");
     const ext = file.slice(file.lastIndexOf("."));
     if (!mime[ext]) throw new Error("Unsupported file");

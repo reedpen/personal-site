@@ -1,8 +1,14 @@
 ---
 import "../styles/global.css";
-import type { SiteMetadata } from "../data/site";
+import { site, type SiteMetadata } from "../data/site";
 
-type Props = SiteMetadata;
+type Props = SiteMetadata & {
+  ogType?: "website" | "article";
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  /** A blog-specific feed to advertise alongside the combined feed. */
+  feed?: { title: string; href: string };
+};
 
 const {
   title,
@@ -12,6 +18,10 @@ const {
   socialImage,
   socialTitle = title,
   socialDescription = description,
+  ogType = "website",
+  publishedTime,
+  modifiedTime,
+  feed,
 } = Astro.props;
 ---
 
@@ -23,7 +33,23 @@ const {
     <meta name="description" content={description} />
     <meta name="author" content={author} />
     <meta name="theme-color" content="#0f0f0f" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    {
+      publishedTime && (
+        <meta
+          property="article:published_time"
+          content={publishedTime.toISOString()}
+        />
+      )
+    }
+    {
+      modifiedTime && (
+        <meta
+          property="article:modified_time"
+          content={modifiedTime.toISOString()}
+        />
+      )
+    }
     <meta property="og:title" content={socialTitle} />
     <meta property="og:description" content={socialDescription} />
     <meta
@@ -37,6 +63,22 @@ const {
     {socialImage && <meta property="og:image" content={socialImage} />}
     {socialImage && <meta name="twitter:image" content={socialImage} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={site.feed.title}
+      href="/rss.xml"
+    />
+    {
+      feed && (
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={feed.title}
+          href={feed.href}
+        />
+      )
+    }
     <title>{title}</title>
   </head>
   <body>

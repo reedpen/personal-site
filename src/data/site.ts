@@ -37,8 +37,25 @@ export type SiteMetadata = {
   socialDescription?: string;
 };
 
+export type BlogContent = {
+  /** Navigation label and page heading. */
+  title: string;
+  path: string;
+  /** Shown under the heading on the blog's index and used as its metadata. */
+  description: string;
+};
+
 export type SiteContent = {
   metadata: SiteMetadata;
+  blogs: {
+    tech: BlogContent;
+    media: BlogContent;
+  };
+  /** The RSS feed that combines both blogs. */
+  feed: {
+    title: string;
+    description: string;
+  };
   navigation: {
     label: string;
     links: readonly SiteLink[];
@@ -82,16 +99,32 @@ export const site = {
     socialDescription:
       "Computer science student and software developer in Provo, Utah.",
   },
+  blogs: {
+    tech: {
+      title: "tech",
+      path: "~/tech",
+      description: "Notes on software, systems, and the tools I build and use.",
+    },
+    media: {
+      title: "media",
+      path: "~/media",
+      description: "Thoughts on the books I read and the movies I watch.",
+    },
+  },
+  feed: {
+    title: "Reed Pennock",
+    description: "Posts from Reed Pennock's tech and media blogs.",
+  },
   navigation: {
     label: "~/reedpen",
     links: [
-      { label: "about", href: "#about" },
-      { label: "experience", href: "#experience" },
-      { label: "projects", href: "#projects" },
-      { label: "education", href: "#education" },
-      { label: "skills", href: "#stack" },
-      { label: "guestbook", href: "#guestbook" },
-      { label: "contact", href: "#contact" },
+      { label: "about", href: "/#about" },
+      { label: "experience", href: "/#experience" },
+      { label: "projects", href: "/#projects" },
+      { label: "education", href: "/#education" },
+      { label: "skills", href: "/#stack" },
+      { label: "guestbook", href: "/#guestbook" },
+      { label: "contact", href: "/#contact" },
     ],
   },
   introduction: {

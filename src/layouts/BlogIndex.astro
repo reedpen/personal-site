@@ -1,0 +1,70 @@
+---
+import PostDetails from "../components/PostDetails.astro";
+import SectionBox from "../components/SectionBox.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { site } from "../data/site";
+import { blogFeed, pageMetadata } from "../lib/metadata";
+import {
+  formatDate,
+  postHref,
+  publishedPosts,
+  type BlogName,
+} from "../lib/posts";
+import BaseLayout from "./BaseLayout.astro";
+
+type Props = { blog: BlogName };
+
+const { blog } = Astro.props;
+const content = site.blogs[blog];
+const posts = await publishedPosts(blog);
+const count = `${posts.length} ${posts.length === 1 ? "post" : "posts"}`;
+const feed = blogFeed(blog);
+---
+
+<BaseLayout
+  {...pageMetadata(content.title, content.description, `/${blog}/`)}
+  feed={feed}
+>
+  <SiteHeader {...site.navigation} current={blog} />
+  <main id="main-content">
+    <section class="introduction" aria-labelledby="blog-title">
+      <p class="section-label">{content.path}</p>
+      <h1 id="blog-title">{content.title}</h1>
+      <p class="introduction-summary">{content.description}</p>
+      <ul class="inline-links" aria-label="Subscribe">
+        <li><a href={feed.href}>[rss]</a></li>
+      </ul>
+    </section>
+    <SectionBox id="posts" title="posts" path={count}>
+      {
+        posts.length > 0 ? (
+          <div class="entry-list">
+            {posts.map((post) => (
+              <article class="entry">
+                <header class="entry-header">
+                  <div>
+                    <h3>
+                      <a href={postHref(post)}>{post.data.title}</a>
+                    </h3>
+                    <PostDetails post={post} />
+                  </div>
+                  <div class="entry-meta">
+                    {post.data.draft && <span is-="badge">draft</span>}
+                    <time datetime={post.data.date.toISOString()}>
+                      {formatDate(post.data.date)}
+                    </time>
+                  </div>
+                </header>
+                <p>{post.data.description}</p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="empty-state">No posts yet.</p>
+        )
+      }
+    </SectionBox>
+  </main>
+  <SiteFooter {...site.footer} email={site.contact.email} />
+</BaseLayout>

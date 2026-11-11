@@ -1,6 +1,6 @@
 # Personal Site Specification
 
-Status: original first-release specification. The later moderated guestbook requirement supersedes its static-only and no-JavaScript constraints. See the README for the current architecture and setup.
+Status: original first-release specification. The later moderated guestbook requirement supersedes its static-only and no-JavaScript constraints, and the tech and media blogs supersede its blog non-goals. See the README for the current architecture and setup.
 
 ## Product Goal
 
