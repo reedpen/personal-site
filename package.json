@@ -22,7 +22,7 @@
     "@neondatabase/serverless": "1.2.0",
     "@vercel/functions": "3.9.11",
     "@webtui/css": "0.1.9",
-    "astro": "7.1.4"
+    "astro": "7.4.7"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.9",
