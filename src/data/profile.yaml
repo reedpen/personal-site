@@ -1,0 +1,119 @@
+name: Reed Pennock
+location: Provo, UT
+email: reederpen@gmail.com
+links:
+  website: https://reedpen.site
+  linkedin: https://linkedin.com/in/reed-pennock
+  github: https://github.com/reedpen
+education:
+  - institution: Brigham Young University
+    credential: B.S. in Computer Science
+    date: Expected Apr 2028
+    location: Provo, UT
+    roles:
+      - title: Vice President
+        organization: BYU Linux Association
+        location: Provo, UT
+        date: 2026-Present
+        bullets:
+          - Lead workshops for 20-30 attendees on Linux, open-source software,
+            and systems tools.
+          - Guide students toward open-source contributions by finding
+            approachable projects and providing technical support.
+experience:
+  - title: Software Engineering Intern, Product Team
+    organization: OpenTeams
+    date: May 2026-Present
+    current: true
+    bullets:
+      - Built ppstats, a 27-kernel statistics package; native skew and kurtosis
+        ran ~25x faster than SciPy on 1M-element arrays.
+      - Submitted PostPython compiler fixes for silent Float16 miscompilation,
+        non-finite constants, and C symbol collisions, with end-to-end
+        regression tests.
+      - Contributed QA and fixed UI/UX issues in Collab, an AI workspace; led
+        release-note videos and documentation.
+      - Built Claude Code and Codex agent workflows for implementation and code
+        review, catching bugs during development.
+    site: true
+    resume: true
+  - title: Software Developer, Neuroscience Lab
+    organization: Brigham Young University
+    location: Provo, UT
+    date: Dec 2025-Present
+    current: true
+    bullets:
+      - Lead development of Python pipelines processing terabytes of
+        calcium-imaging video and EEG/electrophysiology data for a nine-person
+        neuroscience research team.
+      - Re-architected the analysis package into extensible object-oriented
+        components and introduced GitHub Actions CI and comprehensive end-to-end
+        testing.
+    site: true
+    resume: true
+  - title: Undergraduate Teaching Assistant - CS 111
+    organization: Brigham Young University
+    location: Provo, UT
+    date: Aug 2023-Dec 2025
+    current: false
+    bullets:
+      - Mentored 100+ students in Python, recursion, object-oriented
+        programming, and software testing through labs, office hours, and
+        individual code reviews.
+      - Reviewed 200+ programming projects and provided actionable feedback on
+        correctness, algorithmic efficiency, code quality, and style.
+    site: true
+    resume: true
+skills:
+  - label: Languages
+    siteLabel: languages
+    items:
+      - Python
+      - C
+      - C++
+      - Java
+      - SQL
+      - TypeScript
+      - JavaScript
+      - HTML/CSS
+  - label: Frameworks/Libraries
+    siteLabel: frameworks & libraries
+    items:
+      - React
+      - Next.js
+      - FastAPI
+      - pandas
+      - NumPy
+      - SciPy
+      - Matplotlib
+      - scikit-learn
+      - pytest
+      - PyTorch
+      - ONNX Runtime
+  - label: Tools/Platforms
+    siteLabel: tools & platforms
+    items:
+      - Linux
+      - Git
+      - GitHub Actions
+      - Docker
+      - AWS
+      - PostgreSQL
+      - Supabase
+      - Redis
+      - Celery
+      - systemd
+      - Tailscale
+  - label: AI-Native Development
+    siteLabel: AI-native development
+    items:
+      - Claude Code
+      - OpenAI Codex
+      - Agent orchestration
+      - AI-assisted software development
+      - QA
+      - Technical documentation
+  - label: Human Language
+    siteLabel: human language
+    items:
+      - Finnish

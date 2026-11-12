@@ -14,3 +14,5 @@ The web files are installed through `@fontsource/jetbrains-mono` version `5.2.8`
 - SHA-256: `342ac46039b29dc0269579f7e3eb5fdbfdbf2d6031977188b4ba4ae7f4890548`
 
 The underlying symbol collection comes from [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts), whose repository contains the license audit for its aggregated glyph sets.
+
+Liberation Sans files in `resume/fonts/` are provided under the SIL Open Font License 1.1; the complete license is in [`resume/fonts/LICENSE-LiberationSans.txt`](resume/fonts/LICENSE-LiberationSans.txt).

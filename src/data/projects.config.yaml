@@ -1,0 +1,17 @@
+# GitHub account whose repositories discover searches.
+owner: reedpen
+# pinned: pinned repositories; public: owned public non-fork, non-archived
+# repositories; none: disable discovery. Refresh still handles tracked projects.
+discover: pinned
+# Initial visibility for discoveries. Hidden by default; enable after review.
+newProjects:
+  site: false
+  resume: false
+# Allow private repositories to be cloned and summarized. A project's
+# allowPrivate: true overrides false here. Generated text is stored in this repo.
+includePrivate: false
+# Model and reasoning effort passed to the owner's authenticated Codex CLI.
+model: gpt-6.1-sol
+reasoningEffort: medium
+# Maximum number of generated résumé bullets per project (1–10).
+maxBullets: 3

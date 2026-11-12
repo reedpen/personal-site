@@ -1,0 +1,16 @@
+title: Suomi Scraper
+repo: reedpen/suomi-scraper
+site: true
+resume: false
+order: 7
+technologies:
+  - Python
+  - Voikko
+  - Streamlit
+summary: Built a tool that extracts Finnish vocabulary from web pages and
+  documents, reduces words to their base forms, and exports reviewable
+  Anki-ready decks.
+bullets:
+  - Supports PDF, DOCX, and text input, cached translations, and a browser
+    interface for editing cards before export.
+autoSummary: true

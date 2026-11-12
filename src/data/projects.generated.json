@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "projects": {
+    "ace": {
+      "repo": "reedpen/ace",
+      "commit": "aa7ed697b097c97dd71135774f9d4a59527735d5",
+      "generatedAt": "2026-11-12T02:03:00.194Z",
+      "model": "gpt-6.1-sol",
+      "summary": "ACE-neuro is a Python toolkit for processing, visualizing, and synchronizing Miniscope calcium imaging and electrophysiology recordings for neuroscience analysis.",
+      "bullets": [
+        "Integrated CaImAn motion correction and CNMF-E source extraction with calcium movie cropping, detrending, normalization, and event detection.",
+        "Implemented electrophysiology artifact removal with Hann window smoothing and multitaper spectrogram analysis.",
+        "Aligned imaging frames with electrophysiology through TTL timestamps and mapped calcium events to oscillation phases for phase histograms."
+      ],
+      "technologies": [
+        "Python",
+        "CaImAn",
+        "NumPy",
+        "SciPy",
+        "Matplotlib",
+        "pandas",
+        "Neo",
+        "h5py"
+      ],
+      "pushedAt": "2026-04-07T02:43:15Z",
+      "private": false
+    },
+    "chess": {
+      "repo": "reedpen/chess",
+      "commit": "68147a60d072084137329cdbf963426d00362cb1",
+      "generatedAt": "2026-11-12T02:02:56.968Z",
+      "model": "gpt-6.1-sol",
+      "summary": "A Java multiplayer chess application with a command-line client, HTTP and WebSocket server, user authentication, spectator support, and MySQL persistence.",
+      "bullets": [
+        "Implemented chess move validation, pawn promotion, turn enforcement, and check, checkmate, and stalemate detection in a shared Java module.",
+        "Integrated Javalin HTTP endpoints and WebSocket messaging for account management, game creation, player and observer connections, board updates, and resignation.",
+        "Implemented MySQL data access with JDBC prepared statements, Gson game-state serialization, BCrypt password hashing, and UUID authentication tokens."
+      ],
+      "technologies": [
+        "Java",
+        "Javalin",
+        "MySQL",
+        "JDBC",
+        "Gson",
+        "BCrypt",
+        "Maven",
+        "JUnit"
+      ],
+      "pushedAt": "2026-04-13T22:06:15Z",
+      "private": false
+    },
+    "easy-grocer": {
+      "repo": "reedpen/easy-grocer",
+      "commit": "de0a9bd717feffcb04c1b4dc1016abcff24bd69d",
+      "generatedAt": "2026-11-12T02:02:58.888Z",
+      "model": "gpt-6.1-sol",
+      "summary": "Easy Grocer is a progressive web application that generates weekly meal plans, tracks nutrition and estimated grocery costs, and provides Walmart cart handoff links.",
+      "bullets": [
+        "Integrated Spoonacular recipe generation with dietary restrictions, calorie targets, fasting preferences, configurable meal patterns, and fallback mock plans.",
+        "Implemented Supabase authentication with email magic links and Google sign-in, plus transactional PostgreSQL persistence for weekly meal plans and meal items.",
+        "Developed ingredient aggregation and Walmart product resolution through SerpApi, with cached product matches, bounded concurrent requests, estimated pricing fallbacks, and cart links."
+      ],
+      "technologies": [
+        "TypeScript",
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Supabase",
+        "PostgreSQL",
+        "Serwist",
+        "SerpApi"
+      ],
+      "pushedAt": "2026-04-22T01:44:10Z",
+      "private": false
+    },
+    "finnish-inflection-cli": {
+      "repo": "reedpen/finnish-inflection-cli",
+      "commit": "112ca64bc3f18697a30ea9ce68d472505dbe0245",
+      "generatedAt": "2026-11-12T02:03:32.676Z",
+      "model": "gpt-6.1-sol",
+      "summary": "A Python terminal application for practicing Finnish noun, adjective, verb, and participle inflection with model-generated answers, configurable drills, and custom vocabulary sets.",
+      "bullets": [
+        "Separated morphology and practice logic into a shared library with an injectable UralicNLP adapter, cached form generation, and Omorfi tag mappings.",
+        "Implemented shuffled question scheduling, alternative-answer validation, progressive letter hints, and session statistics tracking retries, hints, and skips.",
+        "Added vocabulary imports with delimiter detection, morphological validation, ambiguity overrides, atomic storage, and GitHub-hosted vocabulary set discovery and updates."
+      ],
+      "technologies": [
+        "Python",
+        "UralicNLP",
+        "InquirerPy",
+        "Rich",
+        "prompt_toolkit",
+        "pytest",
+        "Ruff",
+        "uv"
+      ],
+      "pushedAt": "2026-11-11T19:34:47Z",
+      "private": false
+    },
+    "ppstats": {
+      "repo": "reedpen/ppstats",
+      "commit": "e8fb1d63a34322d6931dc2cfd2dfdd26f8e255a8",
+      "generatedAt": "2026-11-12T02:03:25.814Z",
+      "model": "gpt-6.1-sol",
+      "summary": "ppstats is a statistical library implementing descriptive statistics and continuous distributions in typed POST Python, supporting interpreted execution and ahead-of-time compilation to native libraries and NumPy extensions.",
+      "bullets": [
+        "Implemented broadcastable reduction kernels for means, variance, central moments, skewness, kurtosis, standard error, and z-scores, plus PDF, CDF, and inverse CDF functions for six distribution families.",
+        "Added build scripts for native shared libraries, C headers, ABI manifests, and NumPy ufunc extensions, with automatic selection of compiled functions and fallback to interpreted kernels.",
+        "Developed pytest coverage using SciPy reference values, compiled-versus-interpreted comparisons, broadcasting checks, and direct C ABI calls through ctypes."
+      ],
+      "technologies": [
+        "Python",
+        "POST Python",
+        "postpyc",
+        "postyp",
+        "NumPy",
+        "ppspecial",
+        "pytest",
+        "Pixi"
+      ],
+      "pushedAt": "2026-08-26T17:23:39Z",
+      "private": false
+    },
+    "suomi-scraper": {
+      "repo": "reedpen/suomi-scraper",
+      "commit": "9d3772126b3e947f091761800dad3f6d3c70c6d3",
+      "generatedAt": "2026-11-12T02:03:31.674Z",
+      "model": "gpt-6.1-sol",
+      "summary": "Suomi Scraper converts Finnish web pages and documents into English-translated vocabulary decks for Anki through a Streamlit interface and command-line tool.",
+      "bullets": [
+        "Implemented vocabulary processing with Voikko lemmatization, proper-noun filtering, recursive scripture crawling, and PDF, DOCX, and TXT ingestion.",
+        "Integrated Google translation through deep-translator with a transactional SQLite cache, language-pair isolation, and legacy JSON migration.",
+        "Built browser-based card editing and CSV export with field validation, case-insensitive deck merging, and atomic file replacement."
+      ],
+      "technologies": [
+        "Python",
+        "Streamlit",
+        "LibVoikko",
+        "SQLite",
+        "BeautifulSoup",
+        "deep-translator",
+        "pypdf",
+        "python-docx"
+      ],
+      "pushedAt": "2026-07-11T04:47:41Z",
+      "private": false
+    }
+  }
+}

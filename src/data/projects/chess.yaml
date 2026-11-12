@@ -1,0 +1,13 @@
+title: Chess Web Server
+repo: reedpen/chess
+site: true
+resume: true
+order: 3
+technologies:
+  - Java
+  - WebSockets
+  - SQL
+bullets:
+  - Built a real-time multiplayer chess platform with concurrent game sessions,
+    legal-move validation, authentication, and persistent game storage.
+autoSummary: true

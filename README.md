@@ -2,7 +2,7 @@
 
 A personal site built with [Astro](https://astro.build/) and [WebTUI](https://webtui.ironclad.sh/). Astro builds the pages, and a Vercel function provides the guestbook.
 
-The current site content is maintained in one typed data module so it can be kept in sync with the owner's résumé.
+Professional content is shared structured data, ready for the website and future résumé tooling.
 
 ## Requirements
 
@@ -31,23 +31,25 @@ pnpm test
 pnpm build
 ```
 
-The production pages are generated in `dist/`. `pnpm test` runs the guestbook tests against an in-memory Postgres database, so it needs no database account.
+The production pages are generated in `dist/`. `pnpm test` runs shared-data tests in temporary directories and guestbook tests against an in-memory Postgres database, so it needs no database account.
 
 ## Update site content
 
-All personal content lives in [`src/data/site.ts`](src/data/site.ts). Edit that file to change:
+Professional details live in [`src/data/profile.yaml`](src/data/profile.yaml) (identity, education, experience, skills) and one YAML file per project in [`src/data/projects/`](src/data/projects/). The shared loader is [`src/lib/portfolio.mjs`](src/lib/portfolio.mjs).
 
-- Page metadata and author
-- Header label and navigation
-- Tech and media blog headings and descriptions
-- Name, role, summary, and profile links
-- About paragraphs
-- Experience and projects
-- Education and highlights
-- Categorized technology stack
-- Contact details and footer
+- `site` is the public on/off switch; projects default to hidden, experience to visible.
+- `resume` selects résumé entries; projects default to excluded, experience to included.
+- `autoSummary` defaults to true and allows missing project summary, bullets, or technologies to use [`src/data/projects.generated.json`](src/data/projects.generated.json). Set it to false to ignore generated text. Manual fields always win, including empty lists. Visible or résumé projects require a summary or bullets.
+- Project links use `url` when provided, otherwise `https://github.com/<repo>`. `order` sorts projects first, then title; omitted order sorts last.
 
-Optional fields can be deleted. Components do not render empty ASCII art, statuses, links, locations, or highlights.
+[`src/data/stack.yaml`](src/data/stack.yaml) controls project-driven technology stack additions, aliases, categories, and hidden items; `pnpm projects stack` shows the result. Résumé skills stay on `profile.yaml` unless opted in.
+
+Two guides cover the automation built on this data:
+
+- [`docs/projects.md`](docs/projects.md): `pnpm projects` switches projects on or off, discovers new GitHub repositories, and refreshes generated summaries with Codex.
+- [`docs/resume.md`](docs/resume.md): the one-page résumé PDF at `/resume.pdf` is generated from the same data on every build. Preview it with `pnpm resume`.
+
+[`src/data/site.ts`](src/data/site.ts) keeps page metadata, navigation, blog/feed settings, introduction, about, contact, and footer text. Components omit empty optional content.
 
 Keep `metadata.canonicalUrl` set to the final public URL. If you add a social-card image, use a public path such as `/social-card.png`. Optional `socialTitle` and `socialDescription` values can override the document metadata for Open Graph and Twitter cards.
 

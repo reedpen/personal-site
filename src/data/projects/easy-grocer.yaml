@@ -1,0 +1,18 @@
+title: Easy Grocer
+repo: reedpen/easy-grocer
+site: true
+resume: true
+order: 2
+technologies:
+  - Next.js
+  - TypeScript
+  - Supabase
+  - PostgreSQL
+  - Tailwind CSS
+bullets:
+  - Built a progressive web application that generates personalized weekly meal
+    plans from dietary, budget, calorie, and meal-pattern preferences.
+  - Implemented Supabase authentication, persistent planning history, offline
+    support, database migrations, cached product resolution, Walmart cart
+    handoff, and automated CI and security checks.
+autoSummary: true
