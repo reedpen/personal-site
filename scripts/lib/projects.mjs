@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { Document } from "yaml";
@@ -21,6 +21,7 @@ import {
   outputSchema,
 } from "./projects-prompt.mjs";
 import { classifyStack, runStack } from "./projects-stack.mjs";
+import { runModel } from "./projects-llm.mjs";
 import { runProcess } from "./projects-runner.mjs";
 
 export const help = `Usage: pnpm projects <command>
@@ -30,14 +31,15 @@ export const help = `Usage: pnpm projects <command>
   resume <on|off> <slug...>          Set résumé inclusion
   auto <on|off> <slug...>            Set automatic text generation
   discover [--dry-run]               Add repositories according to policy
-  refresh [slug...] [--force] [--dry-run] [--jobs N]
+  refresh [slug...] [--force] [--dry-run] [--jobs N] [--provider codex|opencode]
                                     Refresh automatic summaries (default jobs: 2)
   stack                             Show computed stack, unfiled and hidden technologies
   stack hide <tech...> / stack show <tech...>
                                     Control automatic stack additions
   stack add <category-label> <tech...>
                                     File technologies under a profile skill label
-  stack classify [--dry-run]          Classify unfiled technologies with Codex
+  stack classify [--dry-run] [--provider codex|opencode]
+                                    Classify unfiled technologies
   help                              Show this help
 
 Policy: src/data/projects.config.yaml. New projects default to hidden.
@@ -49,7 +51,11 @@ function parseArgs(args) {
     const arg = args[i];
     if (arg === "--dry-run") options.dryRun = true;
     else if (arg === "--force") options.force = true;
-    else if (arg === "--jobs") {
+    else if (arg === "--provider") {
+      options.provider = args[++i];
+      if (!["codex", "opencode"].includes(options.provider))
+        throw new Error("--provider requires codex or opencode");
+    } else if (arg === "--jobs") {
       const value = args[++i];
       if (
         !value ||
@@ -130,8 +136,6 @@ async function generate(project, metadata, commit, policy, examples, context) {
   const temporary = await mkdtemp(join(context.tempRoot, "projects-refresh-"));
   try {
     const clone = join(temporary, "repo");
-    const schemaFile = join(temporary, "schema.json");
-    const outputFile = join(temporary, "output.json");
     await context.runner("gh", [
       "repo",
       "clone",
@@ -151,36 +155,20 @@ async function generate(project, metadata, commit, policy, examples, context) {
     ]);
     if (actual.stdout.trim() !== commit)
       throw new Error("Default branch changed during clone; run refresh again");
-    await writeFile(
-      schemaFile,
-      `${JSON.stringify(codexJsonSchema(policy.maxBullets), null, 2)}\n`,
-    );
-    await context.runner("codex", [
-      "exec",
-      "-m",
-      policy.model,
-      "-c",
-      `model_reasoning_effort=${policy.reasoningEffort}`,
-      "-s",
-      "read-only",
-      "-C",
-      clone,
-      "--skip-git-repo-check",
-      "--ephemeral",
-      "--output-schema",
-      schemaFile,
-      "-o",
-      outputFile,
-      buildPrompt(policy.maxBullets, examples),
-    ]);
-    const result = outputSchema(policy.maxBullets).parse(
-      JSON.parse(await readFile(outputFile, "utf8")),
-    );
+    const { result, model } = await runModel({
+      policy,
+      cwd: clone,
+      prompt: buildPrompt(policy.maxBullets, examples),
+      jsonSchema: codexJsonSchema(policy.maxBullets),
+      zodSchema: outputSchema(policy.maxBullets),
+      runner: context.runner,
+      tempDir: temporary,
+    });
     return {
       repo: project.repo,
       commit,
       generatedAt: context.now().toISOString(),
-      model: policy.model,
+      model,
       ...result,
       pushedAt: metadata.pushed_at,
       private: metadata.private,
@@ -292,7 +280,7 @@ async function refresh(store, policy, options, context) {
     const portfolio = loadPortfolio({ root: context.root });
     if (!options.dryRun && counts.refreshed) {
       try {
-        await classifyStack(portfolio, false, context);
+        await classifyStack(portfolio, false, { ...context, policy });
       } catch (error) {
         counts.failed++;
         context.log(`Stack classification failed: ${error.message}`);
@@ -395,6 +383,7 @@ export async function runProjects(
   if (command === "discover" && rest.some((arg) => arg !== "--dry-run"))
     throw new Error("Usage: pnpm projects discover [--dry-run]");
   const policy = await readPolicy(store.data);
+  if (options.provider) policy.provider = options.provider;
   if (command === "discover") {
     await discover(store, policy, options, runner, log);
     return 0;

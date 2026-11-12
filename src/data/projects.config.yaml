@@ -10,8 +10,14 @@ newProjects:
 # Allow private repositories to be cloned and summarized. A project's
 # allowPrivate: true overrides false here. Generated text is stored in this repo.
 includePrivate: false
-# Model and reasoning effort passed to the owner's authenticated Codex CLI.
-model: gpt-6.1-sol
-reasoningEffort: medium
+# CLI provider: codex | opencode. Override once with --provider.
+provider: codex
+# Model and reasoning effort passed to the authenticated Codex CLI.
+codex:
+  model: gpt-6.1-sol
+  reasoningEffort: medium
+# OpenCode models must use provider/model. Free models need no login.
+opencode:
+  model: opencode/deepseek-v4.1-flash-free
 # Maximum number of generated résumé bullets per project (1–10).
 maxBullets: 3

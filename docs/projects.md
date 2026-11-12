@@ -3,7 +3,8 @@
 Run commands from the checkout with Node ≥ 22.12 and pnpm. `list`, `help`, and
 visibility changes work offline. Discovery and refresh use your authenticated
 GitHub CLI (`gh auth login`); refresh also uses Git and your locally authenticated
-Codex CLI with your ChatGPT plan (`codex login`). No API tokens are stored in code.
+Codex CLI with your ChatGPT plan (`codex login`), or the OpenCode CLI (tested
+with v2.2.7). OpenCode free models need no login. No API tokens are stored in code.
 
 ```sh
 pnpm projects help
@@ -28,7 +29,7 @@ pnpm projects refresh
   values match case-insensitively. Titles come from repository names. New files
   contain visibility switches and `autoSummary: true`, with no written text.
   Slug collisions get a numeric suffix; existing files are never overwritten.
-- `refresh [slug...] [--force] [--dry-run] [--jobs N]`: refresh all tracked projects
+- `refresh [slug...] [--force] [--dry-run] [--jobs N] [--provider codex|opencode]`: refresh all tracked projects
   or the named subset. Projects without `repo`, or with `autoSummary: false`, are
   skipped, including when explicitly named. Matching repository and cached head
   commit skip generation unless `--force` is set. `--jobs` is a positive integer
@@ -41,7 +42,7 @@ Documents to preserve owner comments and scalar styles; YAML serialization may
 normalize incidental whitespace.
 
 Dry runs fetch GitHub metadata but create no files, clone no repositories, and
-never run Codex. Refresh prints refreshed/unchanged/skipped/failed counts; in a
+never run a model CLI. Refresh prints refreshed/unchanged/skipped/failed counts; in a
 dry run, “refreshed” means “would refresh.” It then validates the portfolio and
 reports all site/resume-enabled projects that still have no summary or bullets.
 
@@ -50,15 +51,38 @@ reports all site/resume-enabled projects that still have no summary or bullets.
 Edit [`src/data/projects.config.yaml`](../src/data/projects.config.yaml). It is
 validated with Zod; unknown keys and invalid values are errors.
 
-| Option            | Default                          | Meaning                                                                                                                  |
-| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `owner`           | `reedpen`                        | GitHub account used by discovery. Refresh uses each project's explicit `repo`.                                           |
-| `discover`        | `pinned`                         | `pinned`: owner's pinned repositories; `public`: owned public non-fork, non-archived repositories; `none`: no discovery. |
-| `newProjects`     | `{ site: false, resume: false }` | Visibility switches on discoveries. Keep both false to review new projects before publishing.                            |
-| `includePrivate`  | `false`                          | Permit cloning and summarizing private repositories globally.                                                            |
-| `model`           | `gpt-6.1-sol`                    | Codex model.                                                                                                             |
-| `reasoningEffort` | `medium`                         | Codex reasoning effort (`none`, `minimal`, `low`, `medium`, `high`, `xhigh`, or `max`, subject to model support).        |
-| `maxBullets`      | `3`                              | Maximum generated résumé bullets, from 1 to 10.                                                                          |
+| Option                  | Default                             | Meaning                                                                                                                  |
+| ----------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `owner`                 | `reedpen`                           | GitHub account used by discovery. Refresh uses each project's explicit `repo`.                                           |
+| `discover`              | `pinned`                            | `pinned`: owner's pinned repositories; `public`: owned public non-fork, non-archived repositories; `none`: no discovery. |
+| `newProjects`           | `{ site: false, resume: false }`    | Visibility switches on discoveries. Keep both false to review new projects before publishing.                            |
+| `includePrivate`        | `false`                             | Permit cloning and summarizing private repositories globally.                                                            |
+| `provider`              | `codex`                             | CLI provider: `codex` or `opencode`.                                                                                     |
+| `opencode.model`        | `opencode/deepseek-v4.1-flash-free` | OpenCode model in `provider/model` format.                                                                               |
+| `codex.model`           | `gpt-6.1-sol`                       | Codex model.                                                                                                             |
+| `codex.reasoningEffort` | `medium`                            | Codex reasoning effort (`none`, `minimal`, `low`, `medium`, `high`, `xhigh`, or `max`, subject to model support).        |
+| `maxBullets`            | `3`                                 | Maximum generated résumé bullets, from 1 to 10.                                                                          |
+
+Provider blocks have defaults, including when omitted. For example:
+
+```yaml
+provider: codex # codex | opencode
+codex:
+  model: gpt-6.1-sol
+  reasoningEffort: medium
+opencode:
+  model: opencode/deepseek-v4.1-flash-free
+```
+
+Use `refresh --provider opencode` or `stack classify --provider opencode` to
+override the provider for one run without editing policy. A refresh override also
+applies to its automatic stack classification. Unknown providers are errors.
+Changing providers does not invalidate cached summaries; use `--force` if needed.
+
+Free models may be rate limited and change over time. Their terms may allow
+prompts to be logged or used for training. Repositories summarized are public by
+default because `includePrivate` is false; per-project `allowPrivate` can override
+that default.
 
 Pinned discovery follows the owner's pins, which can include repositories owned
 by other accounts. Public discovery paginates through all owned public repos.
@@ -82,7 +106,7 @@ Each entry records the repository, commit, timestamp, model, pushed timestamp,
 private flag, and generated text. Refresh does not change the project's manual
 text or visibility.
 
-The editable prompt is in `scripts/lib/projects-prompt.mjs`. It asks Codex to read
+The editable prompt is in `scripts/lib/projects-prompt.mjs`. It asks the model to read
 the README and code, produce one summary sentence of at most 30 words, 1–maxBullets
 past-tense technical bullets of at most 35 words each, and at most eight actual
 technologies. Two owner-written project bullets are loaded at runtime as style
@@ -135,17 +159,18 @@ and labels that contain spaces. These commands work offline, preserve YAML
 comments using the Document API, and replace `stack.yaml` atomically. They create
 the policy file when needed.
 
-`classify` makes one Codex call for all uncategorized technologies, using the
-model and reasoning effort in `projects.config.yaml`. The prompt includes profile
+`classify` sends all uncategorized technologies to the configured provider, using
+its settings in `projects.config.yaml`. The prompt includes profile
 skill labels with existing items as examples and technologies with project
-titles. Codex returns `{assignments: [{technology, category}]}` with each category
+titles. The model returns `{assignments: [{technology, category}]}` with each category
 restricted to a profile skill label or `hide`. Internal/unpublished packages,
 research concepts, and misspellings belong in `hide`. Unrequested technologies
 are ignored; missing or duplicate assignments and invalid categories fail before
-writing. The call runs read-only in a temporary directory, with `--output-schema`,
-`--ephemeral`, and `--skip-git-repo-check`; classification clones no repository.
+writing. The call runs read-only in a temporary directory; classification clones
+no repository. Codex uses `--output-schema`, `--ephemeral`, and
+`--skip-git-repo-check`. OpenCode uses the permission configuration below.
 Temporary files are removed on success or failure. `--dry-run` lists what needs
-classification without calling Codex or writing files.
+classification without calling a model CLI or writing files.
 
 After a non-dry-run `refresh` successfully refreshes at least one project, it
 classifies any uncategorized site technologies and prints the assignments. A
@@ -168,7 +193,7 @@ résumé. Review the output before publishing.
 
 All process execution goes through the injectable runner in
 `scripts/lib/projects-runner.mjs`. Tests use fakes and temporary fixtures, with no
-real GitHub or Codex calls. These are the actual argument sequences (placeholders
+real GitHub or model CLI calls. These are the actual argument sequences (placeholders
 stand for runtime values, not literal shell substitutions):
 
 ```text
@@ -185,10 +210,36 @@ gh api repos/<owner>/<repo>/commits/<URL-encoded-default-branch>
 gh repo clone <owner>/<repo> <temp>/repo -- --depth 1 --branch <default-branch>
 git -C <temp>/repo rev-parse HEAD
 codex exec -m <model> -c model_reasoning_effort=<effort> -s read-only -C <temp>/repo --skip-git-repo-check --ephemeral --output-schema <temp>/schema.json -o <temp>/output.json '<prompt>'
+opencode run -m <provider/model> --format json --archived '<prompt-with-schema>'
 ```
 
 The tool passes arguments directly without a shell. Codex runs read-only in a
-shallow clone. If the branch changes between metadata lookup and cloning, the
+shallow clone. OpenCode runs with cwd set to the shallow clone for refresh or a
+temporary directory for classification. Before launching OpenCode, refresh removes
+`opencode.json`, `opencode.jsonc`, and `.opencode/` from the clone root and writes
+this `opencode.json` (classification writes it into its temporary directory):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "*": "deny",
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow"
+  }
+}
+```
+
+This leaves only read/list/glob/grep access; shell, editing, web access, and
+external directories are removed. OpenCode receives the JSON Schema in the
+prompt, and the adapter reads text from the final stopped step of JSONL output.
+It accepts fenced JSON or prose around the object and validates locally. Parsing
+or schema validation failures get one retry with the validation error; process
+failures and error events fail immediately.
+
+If the branch changes between metadata lookup and cloning, the
 project fails with a retry message instead of caching under the wrong commit.
 Temporary directories are removed on success and failure. As with any process,
 an abrupt termination such as SIGKILL can leave temporary files behind.

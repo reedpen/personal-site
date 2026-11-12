@@ -550,3 +550,64 @@ test("invalid options and commands fail before external work", async (t) => {
     await assert.rejects(f.run(args));
   assert.equal(f.calls.length, 0);
 });
+
+test("refresh provider override locks clone config and records OpenCode model without changing policy", async (t) => {
+  const f = await fixture(t);
+  fakeRefresh(f);
+  const original = f.options.runner;
+  const configBefore = await readFile(
+    join(f.data, "projects.config.yaml"),
+    "utf8",
+  );
+  f.options.runner = async (command, args, options) => {
+    if (command === "opencode") {
+      assert.equal(options.cwd.split("/").at(-1), "repo");
+      assert.deepEqual(await readdir(options.cwd), ["opencode.json"]);
+      const config = JSON.parse(
+        await readFile(join(options.cwd, "opencode.json"), "utf8"),
+      );
+      assert.equal(config.permission["*"], "deny");
+      assert.equal(config.permission.read, "allow");
+      return {
+        stdout: [
+          { type: "step_start" },
+          { type: "text", part: { text: JSON.stringify(text) } },
+          { type: "step_finish", part: { reason: "stop" } },
+        ]
+          .map((event) => JSON.stringify(event))
+          .join("\n"),
+      };
+    }
+    assert.notEqual(command, "codex");
+    const result = await original(command, args);
+    if (command === "gh" && args[0] === "repo") {
+      await writeFile(join(args[3], "opencode.json"), "untrusted");
+      await writeFile(join(args[3], "opencode.jsonc"), "untrusted");
+      await mkdir(join(args[3], ".opencode"));
+      await writeFile(join(args[3], ".opencode", "plugin.js"), "untrusted");
+    }
+    return result;
+  };
+  assert.equal(await f.run(["refresh", "--provider", "opencode"]), 0);
+  assert.equal(
+    (await f.readGenerated()).projects.alpha.model,
+    "opencode/deepseek-v4.1-flash-free",
+  );
+  assert.equal(
+    await readFile(join(f.data, "projects.config.yaml"), "utf8"),
+    configBefore,
+  );
+  assert.deepEqual(await readdir(f.tempRoot), []);
+});
+
+test("refresh can override OpenCode policy with Codex and rejects unknown providers", async (t) => {
+  const f = await fixture(t, undefined, {}, { provider: "opencode" });
+  fakeRefresh(f);
+  assert.equal(await f.run(["refresh", "--provider", "codex"]), 0);
+  assert.ok(f.calls.some(([command]) => command === "codex"));
+  for (const args of [
+    ["refresh", "--provider", "unknown"],
+    ["refresh", "--provider"],
+  ])
+    await assert.rejects(f.run(args), /--provider requires codex or opencode/);
+});

@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { Document, parseDocument, isSeq } from "yaml";
 import { z } from "astro/zod";
@@ -10,6 +10,7 @@ import {
   stackTechnologies,
   uncategorizedTechnologies,
 } from "../../src/lib/portfolio.mjs";
+import { runModel } from "./projects-llm.mjs";
 import { readPolicy, writeAtomic } from "./projects-store.mjs";
 
 const key = (portfolio, name) =>
@@ -114,7 +115,9 @@ export async function classifyStack(portfolio, dryRun, context) {
       context.log(`Would classify ${item.name}: ${item.projects.join(", ")}`);
     return;
   }
-  const policy = await readPolicy(join(context.root, "src/data"));
+  const policy =
+    context.policy ?? (await readPolicy(join(context.root, "src/data")));
+  if (context.provider) policy.provider = context.provider;
   const labels = portfolio.profile.skills.map((skill) => skill.label);
   const categories = [...labels, "hide"];
   const schema = {
@@ -148,28 +151,7 @@ Technologies and project titles:
 ${JSON.stringify(technologies.map(({ name, projects }) => ({ technology: name, projects: projects.map((slug) => titles.get(slug)) })))}`;
   const temporary = await mkdtemp(join(context.tempRoot, "projects-stack-"));
   try {
-    const schemaFile = join(temporary, "schema.json");
-    const outputFile = join(temporary, "output.json");
-    await writeFile(schemaFile, `${JSON.stringify(schema, null, 2)}\n`);
-    await context.runner("codex", [
-      "exec",
-      "-m",
-      policy.model,
-      "-c",
-      `model_reasoning_effort=${policy.reasoningEffort}`,
-      "-s",
-      "read-only",
-      "-C",
-      temporary,
-      "--skip-git-repo-check",
-      "--ephemeral",
-      "--output-schema",
-      schemaFile,
-      "-o",
-      outputFile,
-      prompt,
-    ]);
-    const result = z
+    const zodSchema = z
       .object({
         assignments: z.array(
           z
@@ -180,8 +162,16 @@ ${JSON.stringify(technologies.map(({ name, projects }) => ({ technology: name, p
             .strict(),
         ),
       })
-      .strict()
-      .parse(JSON.parse(await readFile(outputFile, "utf8")));
+      .strict();
+    const { result } = await runModel({
+      policy,
+      cwd: temporary,
+      prompt,
+      jsonSchema: schema,
+      zodSchema,
+      runner: context.runner,
+      tempDir: temporary,
+    });
     const requested = new Map(
       technologies.map((item) => [key(portfolio, item.name), item.name]),
     );
@@ -215,9 +205,20 @@ export async function runStack(args, context) {
   }
   const [command, ...rest] = args;
   if (command === "classify") {
-    if (rest.length > 1 || rest.some((arg) => arg !== "--dry-run"))
-      throw new Error("Usage: pnpm projects stack classify [--dry-run]");
-    await classifyStack(portfolio, rest.includes("--dry-run"), context);
+    let dryRun = false;
+    let provider;
+    for (let i = 0; i < rest.length; i++) {
+      if (rest[i] === "--dry-run") dryRun = true;
+      else if (rest[i] === "--provider") {
+        provider = rest[++i];
+        if (!["codex", "opencode"].includes(provider))
+          throw new Error("--provider requires codex or opencode");
+      } else
+        throw new Error(
+          "Usage: pnpm projects stack classify [--dry-run] [--provider codex|opencode]",
+        );
+    }
+    await classifyStack(portfolio, dryRun, { ...context, provider });
     return 0;
   }
   if (!["hide", "show", "add"].includes(command))

@@ -72,8 +72,7 @@ function fixture(t, { stack, projects = {}, cached = {} } = {}) {
     );
   write("profile.yaml", profile);
   write("projects.config.yaml", {
-    model: "test-model",
-    reasoningEffort: "low",
+    codex: { model: "test-model", reasoningEffort: "low" },
   });
   write("projects.generated.json", { version: 1, projects: cached });
   if (stack !== undefined) write("stack.yaml", stack);
@@ -492,4 +491,109 @@ test("refresh classifies only after a real successful refresh and retains summar
     );
     assert.deepEqual(readdirSync(f.tempRoot), []);
   }
+});
+
+test("stack classify uses OpenCode override in a locked temporary directory", async (t) => {
+  const f = fixture(t, { projects: { alpha: project(["NewTool"]) } });
+  const before = readFileSync(join(f.data, "projects.config.yaml"), "utf8");
+  f.options.runner = async (command, args, options) => {
+    assert.equal(command, "opencode");
+    assert.equal(args[2], "opencode/deepseek-v4.1-flash-free");
+    assert.equal(options.cwd.startsWith(f.tempRoot), true);
+    assert.equal(
+      JSON.parse(readFileSync(join(options.cwd, "opencode.json"))).permission[
+        "*"
+      ],
+      "deny",
+    );
+    return {
+      stdout: [
+        { type: "step_start" },
+        {
+          type: "text",
+          part: {
+            text: JSON.stringify({
+              assignments: [
+                { technology: "NewTool", category: "Tools/Platforms" },
+              ],
+            }),
+          },
+        },
+        { type: "step_finish", part: { reason: "stop" } },
+      ]
+        .map((event) => JSON.stringify(event))
+        .join("\n"),
+    };
+  };
+  assert.equal(await f.run(["stack", "classify", "--provider", "opencode"]), 0);
+  assert.deepEqual(f.load().stack.categories, {
+    "Tools/Platforms": ["NewTool"],
+  });
+  assert.equal(
+    readFileSync(join(f.data, "projects.config.yaml"), "utf8"),
+    before,
+  );
+  assert.deepEqual(readdirSync(f.tempRoot), []);
+  for (const rest of [["--provider", "other"], ["--provider"]])
+    await assert.rejects(
+      f.run(["stack", "classify", ...rest]),
+      /--provider requires codex or opencode/,
+    );
+});
+
+test("refresh OpenCode override also applies to automatic classification", async (t) => {
+  const f = fixture(t, {
+    projects: { alpha: project(undefined, { repo: "owner/alpha" }) },
+  });
+  const calls = [];
+  f.options.runner = async (command, args, options) => {
+    if (command === "gh" && args[0] === "api")
+      return {
+        stdout: JSON.stringify(
+          args[1].includes("/commits/")
+            ? { sha: generated.commit }
+            : {
+                private: false,
+                default_branch: "main",
+                pushed_at: generated.pushedAt,
+              },
+        ),
+      };
+    if (command === "gh" && args[0] === "repo") {
+      mkdirSync(args[3]);
+      return { stdout: "" };
+    }
+    if (command === "git") return { stdout: generated.commit };
+    assert.equal(command, "opencode");
+    calls.push(options.cwd);
+    const output =
+      calls.length === 1
+        ? {
+            summary: generated.summary,
+            bullets: generated.bullets,
+            technologies: generated.technologies,
+          }
+        : {
+            assignments: [
+              { technology: "Generated", category: "Tools/Platforms" },
+            ],
+          };
+    return {
+      stdout: [
+        { type: "step_start" },
+        { type: "text", part: { text: JSON.stringify(output) } },
+        { type: "step_finish", part: { reason: "stop" } },
+      ]
+        .map((event) => JSON.stringify(event))
+        .join("\n"),
+    };
+  };
+  assert.equal(await f.run(["refresh", "--provider", "opencode"]), 0);
+  assert.equal(calls.length, 2);
+  assert.match(calls[0], /projects-refresh-.*\/repo$/);
+  assert.match(calls[1], /projects-stack-/);
+  assert.deepEqual(f.load().stack.categories, {
+    "Tools/Platforms": ["Generated"],
+  });
+  assert.deepEqual(readdirSync(f.tempRoot), []);
 });

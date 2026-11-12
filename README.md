@@ -46,7 +46,7 @@ Professional details live in [`src/data/profile.yaml`](src/data/profile.yaml) (i
 
 Two guides cover the automation built on this data:
 
-- [`docs/projects.md`](docs/projects.md): `pnpm projects` switches projects on or off, discovers new GitHub repositories, and refreshes generated summaries with Codex.
+- [`docs/projects.md`](docs/projects.md): `pnpm projects` switches projects on or off, discovers new GitHub repositories, and refreshes generated summaries with Codex or OpenCode.
 - [`docs/resume.md`](docs/resume.md): the one-page résumé PDF at `/resume.pdf` is generated from the same data on every build. Preview it with `pnpm resume`.
 
 [`src/data/site.ts`](src/data/site.ts) keeps page metadata, navigation, blog/feed settings, introduction, about, contact, and footer text. Components omit empty optional content.
