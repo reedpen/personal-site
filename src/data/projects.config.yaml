@@ -11,7 +11,7 @@ newProjects:
 # allowPrivate: true overrides false here. Generated text is stored in this repo.
 includePrivate: false
 # CLI provider: codex | opencode. Override once with --provider.
-provider: codex
+provider: opencode
 # Model and reasoning effort passed to the authenticated Codex CLI.
 codex:
   model: gpt-6.1-sol

@@ -97,6 +97,30 @@
       "pushedAt": "2026-11-11T19:34:47Z",
       "private": false
     },
+    "personal-site": {
+      "repo": "reedpen/personal-site",
+      "commit": "0df5a6d311d0beaa3265c09c75b207f91b633067",
+      "generatedAt": "2026-11-12T03:51:09.161Z",
+      "model": "opencode/deepseek-v4.1-flash-free",
+      "summary": "A personal portfolio and blog site built with Astro and WebTUI, with Markdown content collections and a Vercel serverless guestbook backed by Neon Postgres.",
+      "bullets": [
+        "Built a static Astro site with WebTUI components, a custom Caelus theme, self-hosted JetBrains Mono, and typed site data driving all sections.",
+        "Implemented tech and media Markdown blogs using Astro content collections, schema validation, draft filtering, and combined and per-blog RSS feeds.",
+        "Developed a Vercel serverless guestbook on Neon Postgres with edge cache invalidation, honeypot spam handling, IP hashing, hourly rate limits, and PGlite tests."
+      ],
+      "technologies": [
+        "Astro",
+        "WebTUI",
+        "TypeScript",
+        "JavaScript",
+        "Neon Postgres",
+        "Vercel",
+        "CSS",
+        "pnpm"
+      ],
+      "pushedAt": "2026-11-12T03:49:35Z",
+      "private": false
+    },
     "ppstats": {
       "repo": "reedpen/ppstats",
       "commit": "e8fb1d63a34322d6931dc2cfd2dfdd26f8e255a8",
