@@ -1,9 +1,9 @@
 ---
-import type { EducationEntry } from "../data/site";
+import type { Education } from "../lib/portfolio.mjs";
 import SectionBox from "./SectionBox.astro";
 
 type Props = {
-  entries: readonly EducationEntry[];
+  entries: readonly Education[];
 };
 
 const { entries } = Astro.props;
@@ -23,10 +23,10 @@ const { entries } = Astro.props;
             {entry.location && <span>{entry.location}</span>}
           </div>
         </header>
-        {entry.highlights && entry.highlights.length > 0 && (
+        {entry.roles && entry.roles.length > 0 && (
           <ul class="highlight-list">
-            {entry.highlights.map((highlight) => (
-              <li>{highlight}</li>
+            {entry.roles.map((role) => (
+              <li>{`${role.title}, ${role.organization} (${role.date.replace("-Present", "–present")}): ${role.bullets.join(" ")}`}</li>
             ))}
           </ul>
         )}

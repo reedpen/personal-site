@@ -1,12 +1,15 @@
 ---
-import type { StackCategory } from "../data/site";
+import type { Skill } from "../lib/portfolio.mjs";
 import SectionBox from "./SectionBox.astro";
 
 type Props = {
-  categories: readonly StackCategory[];
+  categories: readonly Skill[];
 };
 
-const { categories } = Astro.props;
+const categories = Astro.props.categories.map((category) => ({
+  ...category,
+  label: category.siteLabel ?? category.label.toLowerCase(),
+}));
 
 const categoryId = (label: string, index: number) =>
   `stack-${index}-${

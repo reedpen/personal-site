@@ -55,3 +55,11 @@ _Avoid_: Reviews section, reading list
 **Draft**:
 A post marked `draft: true`, visible during local development and omitted from production builds.
 _Avoid_: Unpublished post
+
+**Shared professional data**:
+The profile and project YAML files loaded by `src/lib/portfolio.mjs` for the site and future résumé tooling. Manual project text takes precedence over generated text.
+_Avoid_: Duplicated résumé content
+
+**Project visibility**:
+The `site` switch controls public display; `resume` independently selects résumé inclusion. `autoSummary` permits generated text to fill fields the owner has not written.
+_Avoid_: Automatic publishing

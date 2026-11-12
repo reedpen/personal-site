@@ -1,4 +1,6 @@
 ---
+import { root } from "astro:config/server";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import AboutSection from "../components/AboutSection.astro";
 import ContactSection from "../components/ContactSection.astro";
 import EducationSection from "../components/EducationSection.astro";
@@ -9,7 +11,30 @@ import SiteHeader from "../components/SiteHeader.astro";
 import StackSection from "../components/StackSection.astro";
 import WorkSection from "../components/WorkSection.astro";
 import { site } from "../data/site";
-import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  loadPortfolio,
+  siteProjects,
+  siteExperience,
+  siteStack,
+} from "../lib/portfolio.mjs";
+
+// Astro bundles this module for prerendering; use its configured source root.
+const portfolio = loadPortfolio({ root: root.href });
+const experience = siteExperience(portfolio).map((entry) => ({
+  title: entry.title,
+  organization: entry.organization,
+  date: entry.date,
+  status: entry.current ? "current" : undefined,
+  description: entry.bullets[0] ?? "",
+  highlights: entry.bullets.slice(1),
+}));
+const projects = siteProjects(portfolio).map((project) => ({
+  title: project.title,
+  href: project.url,
+  technologies: project.technologies.join(", "),
+  description: project.summary ?? project.bullets[0] ?? "",
+  highlights: project.summary ? project.bullets : project.bullets.slice(1),
+}));
 ---
 
 <BaseLayout {...site.metadata}>
@@ -21,16 +46,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       id="experience"
       title="experience"
       path="~/experience"
-      entries={site.experience}
+      entries={experience}
     />
     <WorkSection
       id="projects"
       title="projects"
       path="~/projects"
-      entries={site.projects}
+      entries={projects}
     />
-    <EducationSection entries={site.education} />
-    <StackSection categories={site.stack} />
+    <EducationSection entries={portfolio.profile.education} />
+    <StackSection categories={siteStack(portfolio)} />
     <Guestbook />
     <ContactSection {...site.contact} />
   </main>

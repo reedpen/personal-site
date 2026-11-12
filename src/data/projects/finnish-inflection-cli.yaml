@@ -1,0 +1,16 @@
+title: Finnish Inflection CLI
+repo: reedpen/finnish-inflection-cli
+site: true
+resume: false
+order: 6
+technologies:
+  - Python
+  - UralicNLP
+  - Omorfi
+summary: Built an interactive command-line tool for practicing Finnish noun,
+  adjective, and verb inflections with morphology-generated answers and focused
+  drills.
+bullets:
+  - Added custom vocabulary imports with validation, review of ambiguous forms,
+    and safe replacement of saved sets.
+autoSummary: true

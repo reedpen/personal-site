@@ -1,0 +1,16 @@
+title: ACE Neuro
+repo: reedpen/ace
+site: true
+resume: false
+order: 5
+technologies:
+  - Python
+  - calcium imaging
+  - electrophysiology
+summary: Developed a modular analysis pipeline for calcium-imaging video and
+  EEG/electrophysiology data, with components for processing, visualization, and
+  aligning recordings across modalities.
+bullets:
+  - Reworked the package into extensible components and added CI and end-to-end
+    tests for the neuroscience research team.
+autoSummary: true

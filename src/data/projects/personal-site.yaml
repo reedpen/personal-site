@@ -1,0 +1,23 @@
+title: reedpen.site
+repo: reedpen/personal-site
+url: https://github.com/reedpen/personal-site
+site: true
+resume: false
+order: 8
+technologies:
+  - Astro
+  - TypeScript
+  - Vercel
+  - Neon
+  - PostgreSQL
+  - Typst
+summary: Built this terminal-styled personal site, which keeps itself up to date
+  by summarizing my GitHub repositories with an LLM and generating its
+  project list, technology stack, and one-page résumé PDF from the same data.
+bullets:
+  - Wrote a CLI that discovers pinned repositories, re-summarizes only those
+    with new commits, files new technologies into the stack, and leaves every
+    change for review, with per-project switches for the site and résumé.
+  - Added tech and media blogs with RSS and a rate-limited guestbook on Vercel
+    functions and Neon Postgres that stores no raw IP addresses.
+autoSummary: true

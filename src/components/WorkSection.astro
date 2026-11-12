@@ -1,5 +1,14 @@
 ---
-import type { WorkEntry } from "../data/site";
+export type WorkEntry = {
+  title: string;
+  date?: string;
+  description: string;
+  organization?: string;
+  technologies?: string;
+  highlights?: readonly string[];
+  status?: string;
+  href?: string;
+};
 import SectionBox from "./SectionBox.astro";
 
 type Props = {

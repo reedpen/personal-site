@@ -1,0 +1,17 @@
+title: ppstats
+repo: reedpen/ppstats
+site: true
+resume: false
+order: 4
+technologies:
+  - Python
+  - PostPython
+  - NumPy
+  - SciPy
+summary: Built a 27-kernel statistics package in PostPython and cross-validated
+  Python, native shared-library, and NumPy ufunc results against SciPy and
+  NumPy.
+bullets:
+  - Native skew and kurtosis ran about 25 times faster than SciPy on
+    one-million-element arrays in benchmark runs.
+autoSummary: true

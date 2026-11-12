@@ -1,0 +1,49 @@
+# Add technologies from site-visible projects, using their merged manual/generated lists.
+fromProjects: true
+# Minimum number of distinct site-visible projects required for an automatic addition.
+minProjects: 1
+# Keep the résumé on profile.yaml skills unless explicitly enabled here.
+resume: false
+# Normalize variants to canonical spellings (case-insensitive, whitespace trimmed).
+aliases:
+  Postgres: PostgreSQL
+  Voikko: LibVoikko
+# Never auto-add these; owner-written profile skills always remain visible.
+hide:
+  - calcium imaging
+  - electrophysiology
+  - postpyc
+  - postyp
+  - ppspecial
+  - POST Python
+# File effective project technologies under existing profile skill labels.
+# Unlisted technologies stay off the stack until reviewed or classified.
+categories:
+  Languages:
+    - Java
+    - Python
+    - SQL
+    - TypeScript
+    - PostPython
+  Frameworks/Libraries:
+    - Next.js
+    - NumPy
+    - ONNX Runtime
+    - Omorfi
+    - PyTorch
+    - SciPy
+    - Streamlit
+    - Tailwind CSS
+    - UralicNLP
+    - LibVoikko
+    - YOLO
+    - Astro
+    - Typst
+  Tools/Platforms:
+    - Linux
+    - PostgreSQL
+    - SQLite
+    - Supabase
+    - WebSockets
+    - Vercel
+    - Neon
